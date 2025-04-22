@@ -24,3 +24,10 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+.gradient-text {
+  font-weight: bold;
+  background: linear-gradient(to right, #14b8a6, #a855f7, #ec4899); /* teal to purple to pink */
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
