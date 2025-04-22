@@ -1,120 +1,162 @@
-'use client';
+'use client'
 
 import { useState } from "react";
-import Link from "next/link";
-import { regexpValidation, ROUTE_CONSTANTS } from "@/utilis/constants";
+import { Form, Button, Flex } from 'antd';
+import { FIRESTORE_PATH_NAMES, regexpValidation } from "@/utilis/constants";
 import { handleRegister } from "@/features/auth/auth.api";
 import { useRouter } from "next/navigation";
-import { buttonStyles, formStyles, inputStyles, linkStyles } from "@/styles/constants";
-import { Register } from "@/types/auth";
+import { db } from "@/services/firebase/firebase";
+import { doc, getDoc } from "firebase/firestore";
+import { buttonStyles, flex, formItemStyle, formStyles, inputStyles, iStyle } from "@/styles/constants";
 
-const RegisterPage = () => {
+const Register = () => {
+  const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
   const { push } = useRouter();
 
-  const handleSubmit = (event: React.FormEvent) => {
-    event.preventDefault();
-    const formData = new FormData(event.target as HTMLFormElement);
-    const values: Register = {
-      firstName: formData.get("firstName") as string,
-      lastName: formData.get("lastName") as string,
-      email: formData.get("email") as string,
-      password: formData.get("password") as string,
-      collabId: formData.get("collabId") as string | undefined,
-    };
-    handleRegister({ values, setLoading, push });
-  };
-
   return (
-    <form onSubmit={handleSubmit} style={formStyles}>
+    <Form
+      onFinish={(values) => handleRegister({ values, setLoading, push })}
+      layout="vertical"
+      form={form}
+      style={formStyles}
+    >
       <h1 className="gradient-text">SIGN UP</h1>
 
-      <div className="mb-6">
-        <label htmlFor="firstName" className="block text-sm font-medium">First Name</label>
+      <Form.Item
+        style={formItemStyle}
+        name="firstName"
+        rules={[{ required: true, message: "Please input your first name" }]}
+      >
+        <Flex gap={10} style={flex}>
+        <i className='fas fa-user' style={iStyle}></i>
         <input
           type="text"
-          id="firstName"
-          name="firstName"
           placeholder="First name"
-          required
           style={inputStyles}
         />
-      </div>
+        </Flex>
+      </Form.Item>
 
-      <div className="mb-6">
-        <label htmlFor="lastName" className="block text-sm font-medium">Last Name</label>
+      <Form.Item
+        style={formItemStyle}
+        name="lastName"
+        rules={[{ required: true, message: "Please input your last name" }]}
+      >
+        <Flex gap={10} style={flex}>
+        <i className='fas fa-user' style={iStyle}></i>
         <input
           type="text"
-          id="lastName"
-          name="lastName"
           placeholder="Last name"
-          required
           style={inputStyles}
         />
-      </div>
+        </Flex>
+      </Form.Item>
 
-      <div className="mb-6">
-        <label htmlFor="email" className="block text-sm font-medium">Email</label>
+      <Form.Item
+        style={formItemStyle}
+        name="email"
+        rules={[{ required: true, message: "Please input your email" }]}
+      >
+        <Flex gap={10} style={flex}>
+        <i className='fas fa-envelope' style={iStyle}></i>
         <input
           type="email"
-          id="email"
-          name="email"
           placeholder="Email"
-          required
           style={inputStyles}
         />
-      </div>
+        </Flex>
+      </Form.Item>
 
-      <div className="mb-6">
-        <label htmlFor="password" className="block text-sm font-medium">Password</label>
+      <Form.Item
+        style={formItemStyle}
+        name="password"
+        rules={[
+          { required: true, message: "Please input your password" },
+          {
+            pattern: regexpValidation,
+            message:
+              "The password must contain 6-16 characters, including at least one digit and one special character (!@#$%^&*).",
+          },
+        ]}
+      >
+        <Flex gap={10} style={flex}>
+        <i className='fas fa-lock' style={iStyle}></i>
         <input
           type="password"
-          id="password"
-          name="password"
           placeholder="Password"
-          required
-          pattern={regexpValidation.source}
           style={inputStyles}
         />
-      </div>
+        </Flex>
+      </Form.Item>
 
-      <div className="mb-6">
-        <label htmlFor="confirm" className="block text-sm font-medium">Confirm Password</label>
+      <Form.Item
+        style={formItemStyle}
+        name="confirm"
+        dependencies={["password"]}
+        rules={[
+          { required: true, message: "Please confirm your password" },
+          ({ getFieldValue }) => ({
+            validator(_, value) {
+              if (!value || value === getFieldValue("password")) {
+                return Promise.resolve();
+              }
+              return Promise.reject(
+                new Error("The passwords you entered do not match")
+              );
+            },
+          }),
+        ]}
+      >
+        <Flex gap={10} style={flex}>
+        <i className='fas fa-lock' style={iStyle}></i>
         <input
           type="password"
-          id="confirm"
-          name="confirm"
           placeholder="Confirm Password"
-          required
           style={inputStyles}
         />
-      </div>
+        </Flex>
+      </Form.Item>
 
-      <div className="mb-6">
-        <label htmlFor="collabId" className="block text-sm font-medium">Collaboration ID (if you have it)</label>
+      <Form.Item
+        style={formItemStyle}
+        name="collabId"
+        rules={[
+          {
+            validator: async (_, value) => {
+              if (!value) return Promise.resolve();
+              const collabRef = doc(db, FIRESTORE_PATH_NAMES.COLLABORATIONS, value);
+              const collabSnap = await getDoc(collabRef);
+              if (!collabSnap.exists()) {
+                return Promise.reject(new Error("This Collaboration ID does not exist"));
+              }
+              return Promise.resolve();
+            },
+          },
+        ]}
+      >
+        <Flex gap={10} style={flex}>
+        <i className='fas fa-id-badge' style={iStyle}></i>
         <input
           type="text"
-          id="collabId"
-          name="collabId"
           placeholder="Collaboration ID"
           style={inputStyles}
         />
-      </div>
+        </Flex>
+      </Form.Item>
 
       <div className="flex items-center justify-between space-x-4">
-        <button
-          type="submit"
-          disabled={loading}
+        <Button
+          type="primary"
+          htmlType="submit"
+          loading={loading}
           style={buttonStyles}
         >
-          {loading ? "Signing Up..." : "Sign Up"}
-        </button>
-        <Link href={ROUTE_CONSTANTS.LOGIN} style={linkStyles}>
-          <h1 className="gradient-text">Login to account</h1>
-        </Link>
+          Sign Up
+        </Button>
       </div>
-    </form>
+    </Form>
   );
 };
 
-export default RegisterPage;
+export default Register;

@@ -1,68 +1,85 @@
-'use client';
+'use client'
 
+import { Form, Button, Flex } from 'antd';
 import { useState } from 'react';
+import { regexpValidation } from '@/utilis/constants';
 import { useRouter } from 'next/navigation';
-import Link from 'next/link';
+import { handleLogin } from '@/features/auth/auth.api';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from '@/state-management/redux/store';
-import { handleLogin } from '@/features/auth/auth.api';
-import { buttonStyles, formStyles, inputStyles, linkStyles } from '@/styles/constants';
-import { Register } from '@/types/auth';
+import { buttonStyles, formStyles, inputStyles, formItemStyle, iStyle, flex } from '@/styles/constants';
 
 const Login = () => {
+  const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
   const { push } = useRouter();
   const dispatch = useDispatch<AppDispatch>();
 
-  const handleSubmit = (event: React.FormEvent) => {
-    event.preventDefault();
-    const formData = new FormData(event.target as HTMLFormElement);
-
-    const values: Register = {
-      email: formData.get('email') as string, 
-      password: formData.get('password') as string,
-    };
-
-    handleLogin({ setLoading, values, push, dispatch });
-  };
-
   return (
-    <form onSubmit={handleSubmit} style={formStyles}>
+    <Form
+      layout="vertical"
+      onFinish={(values) => handleLogin({ setLoading, values, push, dispatch })}
+      form={form}
+      style={formStyles}
+    >
       <h1 className="gradient-text">SIGN IN</h1>
 
-      <div className="mb-6">
-        <label htmlFor="email">Email</label>
+      <Form.Item
+        name="email"
+        rules={[
+          {
+            required: true,
+            message: "Enter your email",
+          },
+        ]}
+        style={formItemStyle}
+      >
+        <Flex gap={10} style={flex}>
+        <i className='fas fa-user' style={iStyle}></i>
         <input
-          id="email"
-          name="email"
           type="email"
           placeholder="Enter your email"
           style={inputStyles}
-          required
         />
-      </div>
+        </Flex>
+      </Form.Item>
 
-      <div className="mb-6">
-        <label htmlFor="password">Password</label>
+      <Form.Item
+        style={formItemStyle}
+        name="password"
+        tooltip="Password must be min 6 max 16 characters, including one special character."
+        rules={[
+          {
+            required: true,
+            message: "Enter your password",
+          },
+          {
+            pattern: regexpValidation,
+            message: "Password is invalid",
+          },
+        ]}
+      >
+        <Flex gap={10} style={flex}>
+        <i className='fas fa-lock' style={iStyle}></i>
         <input
-          id="password"
-          name="password"
           type="password"
           placeholder="Enter your password"
           style={inputStyles}
-          required
         />
-      </div>
+        </Flex>
+      </Form.Item>
 
       <div className="flex items-center justify-between space-x-4">
-        <button type="submit" style={buttonStyles} disabled={loading}>
-          {loading ? 'Signing In...' : 'Sign In'}
-        </button>
-        <Link href="/register" style={linkStyles}>
-          <h1 className="gradient-text">Create account</h1>
-        </Link>
+        <Button
+          type="primary"
+          htmlType="submit"
+          loading={loading}
+          style={buttonStyles}
+        >
+          Sign In
+        </Button>
       </div>
-    </form>
+    </Form>
   );
 };
 

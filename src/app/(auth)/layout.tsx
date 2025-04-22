@@ -2,10 +2,15 @@
 
 import { useSearchParams } from 'next/navigation'
 import { useEffect, useState } from 'react'
-import { motion } from 'framer-motion'
+import log from '../../../public/undraw_online-dating_w9n9.svg';
+import reg from '../../../public/undraw_projections_fhch.svg';
+import '../../styles/auth.css';
+import { useRouter } from 'next/navigation';
+import { ROUTE_CONSTANTS } from '@/utilis/constants';
 
 export default function AuthLayout({ children }: { children: React.ReactNode }) {
-  const searchParams = useSearchParams()
+  const searchParams = useSearchParams();
+  const { push } = useRouter();
   const [isSignUp, setIsSignUp] = useState(false)
 
   useEffect(() => {
@@ -14,28 +19,44 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
   }, [searchParams])
 
   return (
-    <div className="relative w-full h-screen overflow-hidden bg-gray-100">
-      {/* Background */}
-      <motion.div
-        className="absolute inset-0 bg-gradient-to-r from-blue-500 to-purple-500 z-0"
-        animate={{ x: isSignUp ? '-50%' : '0%' }}
-        transition={{ duration: 0.5 }}
-        style={{ width: '200%' }}
+    <>
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+        integrity="sha512-..."
+        crossOrigin="anonymous"
+        referrerPolicy="no-referrer"
       />
 
-      {/* Forms */}
-      <motion.div
-        className="relative flex w-[200%] h-full z-10"
-        animate={{ x: isSignUp ? '-50%' : '0%' }}
-        transition={{ duration: 0.5 }}
-      >
-        <div className="w-3/4 flex justify-center items-center">
-          {children && !isSignUp && children}
+    <div className={`layout-container ${isSignUp ? 'sign-up-mode' : 'sign-in-mode'}`}>
+        <div className='forms-container'>
+            <div className="signin-signup">
+                {children}
+            </div>
         </div>
-        <div className="w-3/4 flex justify-center items-center">
-          {children && isSignUp && children}
+        <div className="panels-container">
+            <div className="panel left-panel">
+                <div className='content'>
+                    <h3>New here ?</h3>
+                    <p>A modern Jira-style project management app for streamlined task tracking, team collaboration, and efficient workflow management.</p>
+                    <button className='btn transparent' id='sign-up-btn' onClick={() => push(ROUTE_CONSTANTS.REGISTER)}>Sign up</button>
+                </div>
+
+                <img src={log.src} alt="image" className='image'/>
+            </div>
+
+            <div className="panel right-panel">
+                <div className='content'>
+                    <h3>One of us ?</h3>
+                    <p>A modern Jira-style project management app for streamlined task tracking, team collaboration, and efficient workflow management.</p>
+                    <button className='btn transparent' id='sign-up-btn' onClick={() => push(ROUTE_CONSTANTS.LOGIN)}>Sign in</button>
+                </div>
+
+                <img src={reg.src} alt="image" className='image'/>
+            </div>
+
         </div>
-      </motion.div>
-    </div>
+      </div>
+    </>
   )
 }
