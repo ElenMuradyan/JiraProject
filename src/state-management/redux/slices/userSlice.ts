@@ -48,10 +48,15 @@ const userProfileSlice = createSlice({
        setIsAuth: (state, action) => {
         state.authUserInfo.isAuth = action.payload;
        },
+       setImageUrl: (state, action) => {
+        if(state.authUserInfo.userData){
+            state.authUserInfo.userData.imgUrl = action.payload;
+        }
+       },
     },
     extraReducers:(promise) => {
         promise
-        .addCase(fetchUserProfileInfo.pending, (state, action) =>{
+        .addCase(fetchUserProfileInfo.pending, (state) =>{
             state.loading = true;
         })
         .addCase(fetchUserProfileInfo.fulfilled, (state, action) =>{
@@ -69,4 +74,4 @@ const userProfileSlice = createSlice({
 })
 
 export default userProfileSlice.reducer;
-export const { setIsAuth } = userProfileSlice.actions;
+export const { setIsAuth, setImageUrl } = userProfileSlice.actions;

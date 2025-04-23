@@ -8,8 +8,11 @@ export interface stateInterface {
 }
 
 export interface userData  {
+    uid: string,
+    imgUrl: string,
     firstName: string,
     lastName: string,
     email: string,
     collabIds: string[],
+    phone?: string,
 }

@@ -9,7 +9,7 @@ import { setIsAuth } from "@/state-management/redux/slices/userSlice";
 import { AppDispatch } from "@/state-management/redux/store";
 import { useRouter } from "next/navigation";
 import { ROUTE_CONSTANTS } from "@/utilis/constants";
-
+import avatar from '../../../../public/undraw_web-devices_i15y.svg';
 import '../../../styles/dropDown.css';
 
 const { Text } = Typography;
@@ -66,6 +66,7 @@ const AuthProfileDropDown = ({ userProfileInfo }: {userProfileInfo: userData}) =
                     boxShadow: token.boxShadowSecondary,
                   }}>
                     <Flex vertical align="center" style={{padding:token.sizeMS}} className="profile_dropdown_container">
+                        <Avatar src={userProfileInfo.imgUrl ? userProfileInfo.imgUrl : avatar.src}></Avatar>
                         <Text>{userProfileInfo.firstName} {userProfileInfo.lastName}</Text>
                         <Text type="secondary" underline>{userProfileInfo.email}</Text>
                     </Flex>
