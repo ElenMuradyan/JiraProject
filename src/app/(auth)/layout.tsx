@@ -2,8 +2,8 @@
 
 import { useSearchParams } from 'next/navigation'
 import { useEffect, useState } from 'react'
-import log from '../../../public/undraw_online-dating_w9n9.svg';
-import reg from '../../../public/undraw_projections_fhch.svg';
+import log from '../../../public/login.svg';
+import reg from '../../../public/register.svg';
 import '../../styles/auth.css';
 import { useRouter } from 'next/navigation';
 import { ROUTE_CONSTANTS } from '@/utilis/constants';

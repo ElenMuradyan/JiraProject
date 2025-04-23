@@ -4,8 +4,8 @@ export const ROUTE_CONSTANTS={
     HOME: '/',
     LOGIN:'/sign-in?mode=signin',
     REGISTER:'/sign-up?mode=signup',
-    CABINET:'/cabinet',
-    PROFILE:'/cabinet/profile',
+    CABINET:'/Cabinet',
+    PROFILE:'/Cabinet/Profile',
 };
 export const FIRESTORE_PATH_NAMES = {
     COLLABORATIONS: 'collaborations',

@@ -31,7 +31,6 @@ export const handleLogin = async ({values, setLoading, push, dispatch}: Register
     
     try{        
     const { email, password } = values;
-    console.log(email, password);
     
     await signInWithEmailAndPassword( auth, email, password );
     if(dispatch){

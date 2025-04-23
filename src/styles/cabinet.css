@@ -42,5 +42,5 @@
 
 .cabinet_layout_main_container{
     display: flex;
-    height: calc(100vh - 82.4px);   
+    height: calc(100vh - 72px);   
 }
