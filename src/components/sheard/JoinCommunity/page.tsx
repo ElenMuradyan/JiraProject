@@ -1,3 +1,5 @@
+'use client'
+
 import { db } from "@/services/firebase/firebase";
 import { flex, formItemStyle, formStylesForCabinet, inputStyles, iStyle, joinInputStyles } from "@/styles/constants";
 import { FIRESTORE_PATH_NAMES } from "@/utilis/constants";
