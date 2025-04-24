@@ -14,6 +14,14 @@ const menuItems = [
     {
         label: 'Cabinet',
         key: ROUTE_CONSTANTS.CABINET
+    },
+    {
+        label: '+ Add Community',
+        key: ROUTE_CONSTANTS.ADDCOMMUNITY
+    },
+    {
+        label: '+ Join Community',
+        key: ROUTE_CONSTANTS.JOINCOMMUNITY
     }
 ]
 

@@ -23,8 +23,8 @@ export const fetchUserCollabs = createAsyncThunk(
     }
 );
   
-const userProfileSlice = createSlice({
-    name:'userProfile',
+const userCollabsSlice = createSlice({
+    name:'userCollabs',
     initialState,
     reducers: {},
     extraReducers:(promise) => {
@@ -44,5 +44,5 @@ const userProfileSlice = createSlice({
     }
 })
 
-export default userProfileSlice.reducer;
-export const { } = userProfileSlice.actions;
+export default userCollabsSlice.reducer;
+export const { } = userCollabsSlice.actions;

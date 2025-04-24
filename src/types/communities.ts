@@ -1,7 +1,7 @@
 export interface community {
     id: string,
     name: string,
-    description?: string,
+    description: string,
     ownerId: string,
     members: member[],
 }

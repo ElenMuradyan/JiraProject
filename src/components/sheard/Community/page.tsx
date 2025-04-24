@@ -2,7 +2,7 @@ import { community, member } from "@/types/communities";
 import { Avatar, Button, Card } from "antd";
 import { InfoCircleOutlined } from "@ant-design/icons";
 
-export default function Community (community: community){
+export default function Community ({community}: {community: community}){
     return(
         <Card
         title={community.name}

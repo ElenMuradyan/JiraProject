@@ -24,6 +24,19 @@ export const formStyles:CSSProperties = {
     lineHeight: "55px",
     color: "#333",
 };
+
+export const joinInputStyles:CSSProperties = {
+  background: "none",
+  outline: "none",
+  border: "none",
+  fontWeight: 600,
+  fontSize: "1.1rem",
+  width: '380px',
+  height: "55px",
+  lineHeight: "55px",
+  color: "#333",
+};
+
   
   export const buttonStyles:CSSProperties = {
     width: "150px",
@@ -63,3 +76,14 @@ export const formStyles:CSSProperties = {
   export const flex = {
     width: '300px',
   }
+
+  export const formStylesForCabinet:CSSProperties = {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    flexDirection: "column",
+    padding: "0 5rem",
+    gridColumn: "1 / 2",
+    gridRow: "1 / 2",
+    transition: "0.2s 0.7s ease-in-out",
+};

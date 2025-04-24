@@ -32,3 +32,12 @@ body {
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
+
+.styled-heading {
+  font-weight: 700;
+  text-align: center;
+  color: #5995fd; /* Dark gray */
+  margin-bottom: 1.5rem;
+  position: relative;
+  padding-bottom: 0.5rem;
+}

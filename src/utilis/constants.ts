@@ -6,6 +6,8 @@ export const ROUTE_CONSTANTS={
     REGISTER:'/sign-up?mode=signup',
     CABINET:'/Cabinet',
     PROFILE:'/Cabinet/Profile',
+    ADDCOMMUNITY:'/Cabinet/AddCommunity',
+    JOINCOMMUNITY:'/Cabinet/JoinCommunity',
 };
 export const FIRESTORE_PATH_NAMES = {
     COLLABORATIONS: 'collaborations',

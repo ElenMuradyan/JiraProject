@@ -1,0 +1,89 @@
+import { db } from "@/services/firebase/firebase";
+import { flex, formItemStyle, formStylesForCabinet, inputStyles, iStyle, joinInputStyles } from "@/styles/constants";
+import { FIRESTORE_PATH_NAMES } from "@/utilis/constants";
+import { Button, Flex, Form, Input } from "antd";
+import { useForm } from "antd/es/form/Form";
+import { doc, getDoc, updateDoc } from "firebase/firestore";
+import { UserAddOutlined } from '@ant-design/icons';
+import { useSelector } from "react-redux";
+import { RootState } from "@/state-management/redux/store";
+import { community } from "@/types/communities";
+
+export default function JoinCommunity() {
+    const { userData } = useSelector((state: RootState) => state.userProfile.authUserInfo);
+    const [form] = useForm();
+
+    const onFinish = async ({ collabId }: { collabId: string }) => {
+        if (userData) {
+            try {
+                const userRef = doc(db, FIRESTORE_PATH_NAMES.REGISTERED_USERS, userData.uid);
+                await updateDoc(userRef, {
+                    collaborations: [...userData.collabIds, collabId],
+                });
+
+                const collabRef = doc(db, FIRESTORE_PATH_NAMES.COLLABORATIONS, collabId);
+                const collab = await getDoc(collabRef);
+                const { members } = collab.data() as community;
+                await updateDoc(collabRef, {
+                    members: [...members, userData.uid],
+                });
+            } catch (err: any) {
+                console.log(err.message);
+            }
+        }
+    };
+
+    return (
+        <Form style={formStylesForCabinet} onFinish={onFinish} form={form} initialValues={{collabId: 'hi'}}>
+            <Flex gap={10} style={{width: 400}} vertical> 
+            <Form.Item
+                style={formItemStyle}
+                name="collabId"
+                rules={[
+                    { required: true, message: "Please enter a community ID" },
+                    {
+                        validator: async (_, value) => {
+                            if (!value) return Promise.resolve();
+                            if (userData && !(userData.collabIds ?? []).includes(value)) {
+                                const collabRef = doc(db, FIRESTORE_PATH_NAMES.COLLABORATIONS, value);
+                                const collabSnap = await getDoc(collabRef);
+                                if (!collabSnap.exists()) {
+                                    return Promise.reject(new Error("This Community ID does not exist"));
+                                }
+                                return Promise.resolve();
+                            } else {
+                                return Promise.reject(new Error("You are already a member of this Community."));
+                            }
+                        },
+                    },
+                ]}
+            >
+                <Flex gap={10} style={flex}>
+                <i className='fas fa-id-badge' style={iStyle}></i>
+                <Input
+                type="text"
+                className="focus:outline-none focus:ring-0 border-none shadow-none"
+                placeholder="Community ID"
+                style={{
+                    ...joinInputStyles,
+                    boxShadow: "none",
+                    border: "none"
+                  }}
+                onFocus={(e) => {
+                    e.target.style.boxShadow = "none";
+                    e.target.style.border = "none";
+                  }}
+                  onBlur={(e) => {
+                    e.target.style.boxShadow = "none";
+                    e.target.style.border = "none";
+                  }}                
+                />
+                </Flex>
+             </Form.Item>
+            <Button type="primary" htmlType="submit">
+                <UserAddOutlined /> JOIN
+            </Button>
+            </Flex>
+        </Form>
+    );
+}
