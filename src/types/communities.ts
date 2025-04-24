@@ -9,7 +9,8 @@ export interface community {
 export type member = {
     uid: string,
     firstName: string,
-    lastName: string
+    lastName: string,
+    imgUrl: string,                    
 }
 
 export interface collabState {

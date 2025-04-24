@@ -2,9 +2,9 @@
 
 import { Breadcrumb, Layout, Menu, theme } from "antd";
 import { ROUTE_CONSTANTS } from "@/utilis/constants";
-import "../../styles/cabinet.css";
 import { usePathname, useRouter } from "next/navigation";
 const {Sider, Content } = Layout;
+import "../../styles/cabinet.css";
 
 const menuItems = [
     {

@@ -15,9 +15,9 @@ export default function Cabinet () {
 
     useEffect(() => {
         if(userData){
-            dispatch(fetchUserCollabs(userData.collabIds));
+            dispatch(fetchUserCollabs(userData.collaborations));
         }
-    }, [userData]);
+    }, [userData]);    
 
     return(
         <>
@@ -25,7 +25,9 @@ export default function Cabinet () {
             (collabs.length === 0) ?  
             <NoCommunity />
             :
-            collabs.map((item, key) => <Community community={item} key={key}/>)
+            <div className="collabs">
+            {collabs.map((item, key) => <Community community={item} key={key}/>)}
+            </div>
         }
         </>
     )

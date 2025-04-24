@@ -13,6 +13,6 @@ export interface userData  {
     firstName: string,
     lastName: string,
     email: string,
-    collabIds: string[],
+    collaborations: string[],
     phone?: string,
 }

@@ -1,11 +1,13 @@
 import { configureStore } from "@reduxjs/toolkit";
 import userProfileReducer  from '../redux/slices/userSlice';
 import userCollabsReducer  from '../redux/slices/collabSlice';
+import issuesReducer  from '../redux/slices/issues';
 
 export const store = configureStore({
     reducer: {
         userProfile: userProfileReducer,
         userCollabs: userCollabsReducer,
+        issues: issuesReducer,
     }
 });
 

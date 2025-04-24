@@ -1,7 +1,7 @@
 'use client'
 
 import { db } from "@/services/firebase/firebase";
-import { RootState } from "@/state-management/redux/store";
+import { AppDispatch, RootState } from "@/state-management/redux/store";
 import { flex, formItemStyle, formStyles, inputStyles, iStyle, joinInputStyles } from "@/styles/constants";
 import { community } from "@/types/communities";
 import { FIRESTORE_PATH_NAMES } from "@/utilis/constants";
@@ -10,9 +10,10 @@ import { useForm } from "antd/es/form/Form";
 import TextArea from "antd/es/input/TextArea";
 import { addDoc, collection, doc, updateDoc } from "firebase/firestore";
 import { useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { PlusOutlined } from '@ant-design/icons';
 import InviteModal from "../InviteModal/page";
+import { fetchUserProfileInfo } from "@/state-management/redux/slices/userSlice";
 
 export default function AddCommunity () {
     const [submitting, setSubmitting] = useState(false);
@@ -20,6 +21,7 @@ export default function AddCommunity () {
     const [ form ] = useForm();
     const [ open, setOpen ] = useState<boolean>(false);
     const [ id, setId ] = useState<string>('');
+    const dispatch = useDispatch<AppDispatch>();
 
     const handleFinish = async (values: community) => {
         if(userData){
@@ -29,7 +31,12 @@ export default function AddCommunity () {
                     name: values.name,
                     ownerId: userData.uid,
                     description: values.description,
-                    members: [userData.uid],
+                    members: [{
+                        uid: userData.uid,
+                        firstName: userData.firstName,
+                        lastName: userData.lastName,
+                        imgUrl: userData.imgUrl,                    
+                    }],
                     id: ''
                 };
                 
@@ -37,11 +44,18 @@ export default function AddCommunity () {
                 const data = await addDoc(communityRef, community);
                 const ref = doc(db, FIRESTORE_PATH_NAMES.COLLABORATIONS, data.id);
                 await updateDoc(ref, {id: data.id});  
+
+                const userRef = doc(db, FIRESTORE_PATH_NAMES.REGISTERED_USERS, userData.uid);
+                await updateDoc(userRef, {
+                    collaborations: [...userData.collaborations, data.id]
+                });
+
                 form.resetFields();  
                 setId(data.id);
-                setOpen(true);   
+                setOpen(true);  
+                dispatch(fetchUserProfileInfo()); 
                 return data.id;    
-            }catch{
+            }catch(err: any){                
                 console.log('Error while adding community');  
             }finally{
                 setSubmitting(false);
@@ -116,7 +130,7 @@ export default function AddCommunity () {
         >
         <Flex gap={10} style={flex}>
         <i className='fas fa-user' style={iStyle}></i>
-        <TextArea style={{width: '100%'}} rows={4} placeholder="Describe your community" />
+        <TextArea style={{width: '100%'}} rows={4}  placeholder="Describe your community" maxLength={200} showCount={true}/>
         </Flex>
         </Form.Item>
     

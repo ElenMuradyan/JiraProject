@@ -11,8 +11,8 @@ import { useSelector } from "react-redux";
 import { RootState } from "@/state-management/redux/store";
 import { community } from "@/types/communities";
 import { useParams } from "next/navigation";
-import '../../../styles/auth.css';
 import { useEffect, useState } from "react";
+import '../../../styles/auth.css';
 
 export default function JoinCommunity() {
     const { userData } = useSelector((state: RootState) => state.userProfile.authUserInfo);
@@ -33,14 +33,21 @@ export default function JoinCommunity() {
             try {
                 const userRef = doc(db, FIRESTORE_PATH_NAMES.REGISTERED_USERS, userData.uid);
                 await updateDoc(userRef, {
-                    collaborations: [...userData.collabIds, collabId],
+                    collaborations: [...userData.collaborations, collabId],
                 });
 
                 const collabRef = doc(db, FIRESTORE_PATH_NAMES.COLLABORATIONS, collabId);
                 const collab = await getDoc(collabRef);
                 const { members } = collab.data() as community;
                 await updateDoc(collabRef, {
-                    members: [...members, userData.uid],
+                    members: [...members, 
+                        {
+                            uid: userData.uid,
+                            firstName: userData.firstName,
+                            lastName: userData.lastName,
+                            imgUrl: userData.imgUrl,                        
+                        }
+                    ],
                 });
             } catch (err: any) {
                 console.log(err.message);
@@ -60,7 +67,7 @@ export default function JoinCommunity() {
                     {
                         validator: async (_, value) => {
                             if (!value) return Promise.resolve();
-                            if (userData && !(userData.collabIds ?? []).includes(value)) {
+                            if (userData && !(userData.collaborations ?? []).includes(value)) {
                                 const collabRef = doc(db, FIRESTORE_PATH_NAMES.COLLABORATIONS, value);
                                 const collabSnap = await getDoc(collabRef);
                                 if (!collabSnap.exists()) {

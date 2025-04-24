@@ -35,9 +35,6 @@ const Profile = () => {
                 const userDocRef = doc(db, FIRESTORE_PATH_NAMES.REGISTERED_USERS, userData.uid);
                 await updateDoc(userDocRef, sanitizedValues);
                 dispatch(fetchUserProfileInfo());
-                notification.success({
-                    message:'user data successfully updated'
-                })
             }catch(err: any){
                 console.log(err.message); 
             }finally{
@@ -51,10 +48,8 @@ const Profile = () => {
             try{
                 const userDocRef = doc ( db, FIRESTORE_PATH_NAMES.REGISTERED_USERS, userData.uid);
                 await updateDoc(userDocRef, { imgUrl: imgUrl ? imgUrl : null });
-            }catch{
-                notification.error({
-                    message:'Error:('
-                })
+            }catch(err: any){
+                console.log(err.message);
             }    
         }
     };
