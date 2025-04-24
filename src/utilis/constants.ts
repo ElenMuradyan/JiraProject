@@ -7,7 +7,7 @@ export const ROUTE_CONSTANTS={
     CABINET:'/Cabinet',
     PROFILE:'/Cabinet/Profile',
     ADDCOMMUNITY:'/Cabinet/AddCommunity',
-    JOINCOMMUNITY:'/Cabinet/JoinCommunity',
+    JOINCOMMUNITY:'/Cabinet/JoinCommunity/join',
 };
 export const FIRESTORE_PATH_NAMES = {
     COLLABORATIONS: 'collaborations',

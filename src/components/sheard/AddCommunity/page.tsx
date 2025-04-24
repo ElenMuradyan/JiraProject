@@ -12,11 +12,14 @@ import { addDoc, collection, doc, updateDoc } from "firebase/firestore";
 import { useState } from "react";
 import { useSelector } from "react-redux";
 import { PlusOutlined } from '@ant-design/icons';
+import InviteModal from "../InviteModal/page";
 
 export default function AddCommunity () {
     const [submitting, setSubmitting] = useState(false);
     const { userData } = useSelector((state: RootState) => state.userProfile.authUserInfo);
     const [ form ] = useForm();
+    const [ open, setOpen ] = useState<boolean>(false);
+    const [ id, setId ] = useState<string>('');
 
     const handleFinish = async (values: community) => {
         if(userData){
@@ -34,7 +37,9 @@ export default function AddCommunity () {
                 const data = await addDoc(communityRef, community);
                 const ref = doc(db, FIRESTORE_PATH_NAMES.COLLABORATIONS, data.id);
                 await updateDoc(ref, {id: data.id});  
-                form.resetFields();     
+                form.resetFields();  
+                setId(data.id);
+                setOpen(true);   
                 return data.id;    
             }catch{
                 console.log('Error while adding community');  
@@ -42,9 +47,16 @@ export default function AddCommunity () {
                 setSubmitting(false);
             }
         }
+    };
+
+    const handleClose = () => {
+        setOpen(false);
+        setId('');
     }
 
     return(
+        <>
+        <InviteModal open={open} onClose={handleClose} communityId={id}/>
         <Form
         form={form}
         layout="vertical"
@@ -115,5 +127,6 @@ export default function AddCommunity () {
           </Button>
         </Form.Item>
       </Form>
+        </>
       )
 }

@@ -10,11 +10,24 @@ import { UserAddOutlined } from '@ant-design/icons';
 import { useSelector } from "react-redux";
 import { RootState } from "@/state-management/redux/store";
 import { community } from "@/types/communities";
+import { useParams } from "next/navigation";
+import '../../../styles/auth.css';
+import { useEffect, useState } from "react";
 
 export default function JoinCommunity() {
     const { userData } = useSelector((state: RootState) => state.userProfile.authUserInfo);
     const [form] = useForm();
+    const { joinID } = useParams();    
+    const [inputValue, setInputValue] = useState(joinID !== "join" ? joinID : "");
 
+    useEffect(() => {
+        form.setFieldsValue({ collabId: inputValue });
+      }, [inputValue, form]);
+    
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setInputValue(e.target.value);
+    };
+    
     const onFinish = async ({ collabId }: { collabId: string }) => {
         if (userData) {
             try {
@@ -36,10 +49,11 @@ export default function JoinCommunity() {
     };
 
     return (
-        <Form style={formStylesForCabinet} onFinish={onFinish} form={form} initialValues={{collabId: 'hi'}}>
+        <Form style={formStylesForCabinet} onFinish={onFinish} form={form}>
             <Flex gap={10} style={{width: 400}} vertical> 
             <Form.Item
                 style={formItemStyle}
+                initialValue={joinID !== 'join' ? String(joinID) : ''}
                 name="collabId"
                 rules={[
                     { required: true, message: "Please enter a community ID" },
@@ -63,6 +77,8 @@ export default function JoinCommunity() {
                 <Flex gap={10} style={flex}>
                 <i className='fas fa-id-badge' style={iStyle}></i>
                 <Input
+                value={inputValue}
+                onChange={handleInputChange} 
                 type="text"
                 className="focus:outline-none focus:ring-0 border-none shadow-none"
                 placeholder="Community ID"

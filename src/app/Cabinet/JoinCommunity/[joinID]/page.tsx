@@ -1,5 +1,5 @@
 import Image from "next/image";
-import image from '../../../../public/join.svg';
+import image from '../../../../../public/join.svg';
 import { Flex } from "antd";
 import JoinCommunity from "@/components/sheard/JoinCommunity/page";
 
