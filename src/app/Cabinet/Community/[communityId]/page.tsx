@@ -9,18 +9,19 @@ import { AppDispatch, RootState } from "@/state-management/redux/store";
 import { fetchIssueData, changeIssueColumns } from "@/state-management/redux/slices/issues";
 import { FIRESTORE_PATH_NAMES } from "@/utilis/constants";
 import { ISSUE_OPTIONS } from "@/utilis/issues";
-// import AddIssueModal from "../../components/sheard/IssueModal/Add";
-// import EditIssueModal from "../../components/sheard/IssueModal/Edit";
-// import './index.css';
+import AddIssueModal from "@/components/sheard/IssueModal/Add/page";
+import EditIssueModal from "@/components/sheard/IssueModal/Edit/page";
 import { db } from "@/services/firebase/firebase";
 import { useParams } from "next/navigation";
+import { issue } from "@/types/issues";
 import '../../../../styles/cabinet.css';
+
 const { Title, Text } = Typography;
 
 const Cabinet = () => {
   const dispatch = useDispatch<AppDispatch>();
   const [showModal, setShowModal] = useState<boolean>(false);
-  const [editModalData, setEditModalData] = useState<any>(null); // Replace `any` with your actual Issue type
+  const [editModalData, setEditModalData] = useState<issue | null>(null); 
   const { data, loading } = useSelector((state: RootState) => state.issues);
   const { communityId } = useParams();
 
@@ -54,7 +55,7 @@ const Cabinet = () => {
       const updateTasks = async (arr: any[], status?: string) => {
         for (let i = 0; i < arr.length; i++) {
           const item = arr[i];
-          const docRef = doc(db, FIRESTORE_PATH_NAMES.ISSUES, item.taskId);
+          const docRef = doc(db, FIRESTORE_PATH_NAMES.COLLABORATIONS, communityId, FIRESTORE_PATH_NAMES.ISSUES, item.taskId);
           await updateDoc(docRef, {
             taskIndex: i,
             ...(status && { status }),
@@ -79,19 +80,18 @@ const Cabinet = () => {
         Create Issue
       </Button>
 
-      {/* <AddIssueModal isOpen={showModal} onClose={handleCloseModal} /> */}
-      {/* {
-        Boolean(editModalData) && (
+      <AddIssueModal isOpen={showModal} onClose={handleCloseModal} />
+      {
+        Boolean(editModalData) && editModalData && (
           <EditIssueModal
             isOpen={Boolean(editModalData)}
             onClose={() => setEditModalData(null)}
             data={editModalData}
           />
         )
-      } */}
+      }
 
       <div className="drag_context_container">
-        {/* <LoadingWrapper loading={loading}> */}
         <DragDropContext onDragEnd={handleChangeTaskStatus}>
           {data && Object.entries(data).map(([columnId, column]) => (
             <div className="column_container" key={columnId}>
@@ -101,8 +101,9 @@ const Cabinet = () => {
                 </Title>
               </div>
 
-              <Droppable droppableId={columnId}>
-                {(provided: any) => (
+              <Droppable droppableId={columnId} isDropDisabled={false} isCombineEnabled={false}
+                ignoreContainerClipping={false}>
+              {(provided: any) => (
                   <div
                     {...provided.droppableProps}
                     ref={provided.innerRef}
@@ -133,7 +134,6 @@ const Cabinet = () => {
             </div>
           ))}
         </DragDropContext>
-        {/* </LoadingWrapper> */}
       </div>
     </div>
   );
