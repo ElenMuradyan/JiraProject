@@ -11,6 +11,7 @@ import { useRouter } from "next/navigation";
 import { ROUTE_CONSTANTS } from "@/utilis/constants";
 import avatar from '../../../../public/undraw_web-devices_i15y.svg';
 import '../../../styles/dropDown.css';
+import { setFullNameLetter } from "@/utilis/helpers/getLetters";
 
 const { Text } = Typography;
 const { useToken } = theme; 
@@ -19,13 +20,6 @@ const AuthProfileDropDown = ({ userProfileInfo }: {userProfileInfo: userData}) =
     const dispatch = useDispatch<AppDispatch>();
     const { push } = useRouter();
     const { token } = useToken();
-
-    const setFullNameLetter = ({ firstName, lastName }: Record<string, string>) => {
-        if (firstName && lastName){
-            return `${firstName[0]} ${lastName[0]}`;
-        };
-        return '-';
-    }
 
     const handleSignOut = async () => {
         try{

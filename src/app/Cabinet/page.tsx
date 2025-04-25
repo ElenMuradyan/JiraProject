@@ -2,7 +2,7 @@
 
 import Community from "@/components/sheard/Community/page";
 import NoCommunity from "@/components/sheard/NoCommunity/page";
-import { fetchUserCollabs } from "@/state-management/redux/slices/collabSlice";
+import { fetchUserCollabs } from "@/state-management/redux/slices/collabsSlice";
 import { AppDispatch, RootState } from "@/state-management/redux/store"
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux"

@@ -6,43 +6,39 @@ import { collabState, community } from "@/types/communities";
 
 const initialState: collabState = {
     loading: false,
-    collabs: [],
+    collab: null,
     error: null
 }
 
-export const fetchUserCollabs = createAsyncThunk(
-    'user/fetchUserCollabs',
-    async (ids: string[]) => {
-        const collabs = await Promise.all(ids.map(async id => {
-            const collabDoc = doc(db, FIRESTORE_PATH_NAMES.COLLABORATIONS, id);
-            const collabSnap = await getDoc(collabDoc);
-            return collabSnap.data() as community;
-        }));
-
-        return collabs;
-    }
+export const fetchCollab = createAsyncThunk(
+    'user/fetchCollab',
+    async (id: string) => {
+        const collabDoc = doc(db, FIRESTORE_PATH_NAMES.COLLABORATIONS, id);
+        const collabSnap = await getDoc(collabDoc);
+        return collabSnap.data() as community;
+}
 );
   
-const userCollabsSlice = createSlice({
+const collabSlice = createSlice({
     name:'userCollabs',
     initialState,
     reducers: {},
     extraReducers:(promise) => {
         promise
-        .addCase(fetchUserCollabs.pending, (state) =>{
+        .addCase(fetchCollab.pending, (state) =>{
             state.loading = true;
         })
-        .addCase(fetchUserCollabs.fulfilled, (state, action) =>{
+        .addCase(fetchCollab.fulfilled, (state, action) =>{
             state.loading = false;
-            state.collabs = action.payload as community[];
+            state.collab = action.payload as community;
         })
-        .addCase(fetchUserCollabs.rejected, (state, action) =>{
+        .addCase(fetchCollab.rejected, (state, action) =>{
             state.loading = false;
             state.error = action.payload as string;
-            state.collabs = []
+            state.collab = null
         })
     }
 })
 
-export default userCollabsSlice.reducer;
-export const { } = userCollabsSlice.actions;
+export default collabSlice.reducer;
+export const { } = collabSlice.actions;

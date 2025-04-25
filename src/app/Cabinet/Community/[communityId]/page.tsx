@@ -1,142 +1,54 @@
-'use client'
+'use client';
 
-import { Button, Flex, Typography } from "antd";
-import { useState, useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
-import { doc, updateDoc } from "firebase/firestore";
-import { AppDispatch, RootState } from "@/state-management/redux/store";
-import { fetchIssueData, changeIssueColumns } from "@/state-management/redux/slices/issues";
-import { FIRESTORE_PATH_NAMES } from "@/utilis/constants";
-import { ISSUE_OPTIONS } from "@/utilis/issues";
-import AddIssueModal from "@/components/sheard/IssueModal/Add/page";
-import EditIssueModal from "@/components/sheard/IssueModal/Edit/page";
-import { db } from "@/services/firebase/firebase";
+import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
-import { issue } from "@/types/issues";
-import '../../../../styles/cabinet.css';
+import { Avatar, Button } from "antd";
+import { InfoCircleOutlined } from "@ant-design/icons";
+import { community, member } from "@/types/communities";
+import { setFullNameLetter } from "@/utilis/helpers/getLetters";
+import { db } from "@/services/firebase/firebase";
+import { doc, getDoc } from "firebase/firestore";
+import { useDispatch } from "react-redux";
+import { AppDispatch, RootState } from "@/state-management/redux/store";
+import { fetchCollab } from "@/state-management/redux/slices/collabSlice";
+import { useSelector } from "react-redux";
 
-const { Title, Text } = Typography;
-
-const Cabinet = () => {
-  const dispatch = useDispatch<AppDispatch>();
-  const [showModal, setShowModal] = useState<boolean>(false);
-  const [editModalData, setEditModalData] = useState<issue | null>(null); 
-  const { data, loading } = useSelector((state: RootState) => state.issues);
+export default function CommunityPage() {
   const { communityId } = useParams();
+  const { collab } = useSelector((state: RootState) => state.collab);
+  const dispatch = useDispatch<AppDispatch>();
 
   useEffect(() => {
-    if(communityId){
-        dispatch(fetchIssueData(communityId as string));
+    if(communityId && typeof communityId === 'string'){
+      dispatch(fetchCollab(communityId));
     }
-  }, [dispatch]);
+  },[communityId]);
 
-  const handleOpenModal = () => setShowModal(true);
-  const handleCloseModal = () => setShowModal(false);
-
-  const handleChangeTaskStatus = async (result: any) => {
-    if (!result.destination || !data) return;
-
-    const { source, destination } = result;
-    const sourceArray = [...data[source.droppableId]];
-    const destinationArray = [...data[destination.droppableId]];
-
-    if (destination.droppableId === source.droppableId) {
-      const [movedItem] = sourceArray.splice(source.index, 1);
-      sourceArray.splice(destination.index, 0, movedItem);
-    } else {
-      const [movedItem] = sourceArray.splice(source.index, 1);
-      destinationArray.splice(destination.index, 0, movedItem);
-    }
-
-    try {
-      dispatch(changeIssueColumns({ source, destination }));
-
-      const updateTasks = async (arr: any[], status?: string) => {
-        for (let i = 0; i < arr.length; i++) {
-          const item = arr[i];
-          const docRef = doc(db, FIRESTORE_PATH_NAMES.COLLABORATIONS, communityId, FIRESTORE_PATH_NAMES.ISSUES, item.taskId);
-          await updateDoc(docRef, {
-            taskIndex: i,
-            ...(status && { status }),
-          });
-        }
-      };
-
-      if (source.droppableId !== destination.droppableId) {
-        await updateTasks(destinationArray, destination.droppableId);
-        await updateTasks(sourceArray);
-      } else {
-        await updateTasks(sourceArray, destination.droppableId);
-      }
-    } catch (e) {
-      console.error("Drag update error:", e);
-    }
-  };
+  if (!collab) {
+    return <div className="p-8">Loading community data...</div>;
+  }
 
   return (
-    <div>
-      <Button type="primary" onClick={handleOpenModal}>
-        Create Issue
-      </Button>
+    <div className="p-8 max-w-2xl mx-auto">
+      <div className="flex items-center justify-between mb-4">
+        <h1 className="text-3xl font-bold">{collab.name}</h1>
+      </div>
 
-      <AddIssueModal isOpen={showModal} onClose={handleCloseModal} />
-      {
-        Boolean(editModalData) && editModalData && (
-          <EditIssueModal
-            isOpen={Boolean(editModalData)}
-            onClose={() => setEditModalData(null)}
-            data={editModalData}
-          />
-        )
-      }
+      <div className="mb-6 p-4 bg-gray-100 rounded-lg">
+        <h2 className="text-lg font-semibold mb-2">Description</h2>
+        <p>{collab.description || "No description provided."}</p>
+      </div>
 
-      <div className="drag_context_container">
-        <DragDropContext onDragEnd={handleChangeTaskStatus}>
-          {data && Object.entries(data).map(([columnId, column]) => (
-            <div className="column_container" key={columnId}>
-              <div className="column_header">
-                <Title level={5} type="secondary">
-                  {columnId} ({column.length})
-                </Title>
-              </div>
-
-              <Droppable droppableId={columnId} isDropDisabled={false} isCombineEnabled={false}
-                ignoreContainerClipping={false}>
-              {(provided: any) => (
-                  <div
-                    {...provided.droppableProps}
-                    ref={provided.innerRef}
-                    className="droppable_container"
-                  >
-                    {column.map((item, index) => (
-                      <Draggable key={item.taskId} draggableId={item.taskId} index={index}>
-                        {(provided: any) => (
-                          <div
-                            className="issue_card_container"
-                            ref={provided.innerRef}
-                            {...provided.draggableProps}
-                            {...provided.dragHandleProps}
-                            onClick={() => setEditModalData(item)}
-                          >
-                            <Flex>
-                              <Text>{item.issueName}</Text>
-                              <div>{ISSUE_OPTIONS[item.type]?.icon}</div>
-                            </Flex>
-                          </div>
-                        )}
-                      </Draggable>
-                    ))}
-                    {provided.placeholder}
-                  </div>
-                )}
-              </Droppable>
-            </div>
+      <div className="mb-6">
+        <h2 className="text-lg font-semibold mb-2">Members ({collab.members?.length || 0})</h2>
+        <Avatar.Group>
+          {collab.members.map((member: member, index: number) => (
+            <Avatar key={index}>
+              {setFullNameLetter({ firstName: member.firstName, lastName: member.lastName })}
+            </Avatar>
           ))}
-        </DragDropContext>
+        </Avatar.Group>
       </div>
     </div>
   );
-};
-
-export default Cabinet;
+}

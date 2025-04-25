@@ -2,7 +2,7 @@
 
 import { db } from "@/services/firebase/firebase";
 import { flex, formItemStyle, formStylesForCabinet, inputStyles, iStyle, joinInputStyles } from "@/styles/constants";
-import { FIRESTORE_PATH_NAMES } from "@/utilis/constants";
+import { FIRESTORE_PATH_NAMES, ROUTE_CONSTANTS } from "@/utilis/constants";
 import { Button, Flex, Form, Input } from "antd";
 import { useForm } from "antd/es/form/Form";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
@@ -12,6 +12,7 @@ import { RootState } from "@/state-management/redux/store";
 import { community } from "@/types/communities";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import '../../../styles/auth.css';
 
 export default function JoinCommunity() {
@@ -19,7 +20,7 @@ export default function JoinCommunity() {
     const [form] = useForm();
     const { joinID } = useParams();    
     const [inputValue, setInputValue] = useState(joinID !== "join" ? joinID : "");
-
+    const { push } = useRouter();
     useEffect(() => {
         form.setFieldsValue({ collabId: inputValue });
       }, [inputValue, form]);
@@ -49,6 +50,8 @@ export default function JoinCommunity() {
                         }
                     ],
                 });
+                form.setFieldValue('collabId', '');
+                push(`${ROUTE_CONSTANTS.COMMUNITY}/${collab.id}`);
             } catch (err: any) {
                 console.log(err.message);
             }

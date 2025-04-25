@@ -13,8 +13,14 @@ export type member = {
     imgUrl: string,                    
 }
 
-export interface collabState {
+export interface collabsState {
     loading: boolean,
     error: string | null,
     collabs: community[]
+}
+
+export interface collabState {
+    loading: boolean,
+    error: string | null,
+    collab: community | null
 }

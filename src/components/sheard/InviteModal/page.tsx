@@ -3,6 +3,7 @@ import { Modal, Button, Space, Tooltip } from "antd";
 import { CopyOutlined } from "@ant-design/icons";
 import { FaTelegramPlane, FaInstagram, FaFacebook } from "react-icons/fa";
 import { InviteModalProps } from "@/types/modal";
+import image from '../../../../public/invite.svg';
 
 export default function InviteModal ({ open, onClose, communityId }: InviteModalProps) {
     const shareUrl = `//localhost:3000/Cabinet/JoinCommunity/${communityId}`; 
@@ -16,6 +17,7 @@ export default function InviteModal ({ open, onClose, communityId }: InviteModal
     };
     return(
         <Modal open={open} onCancel={onClose} footer={null} title="Invite to Community">
+          <img src={image.src}/>
         <p>Invite others to join your community!</p>
         <Space direction="vertical" size="middle" style={{ width: '100%' }}>
           <Button

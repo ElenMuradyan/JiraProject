@@ -2,9 +2,31 @@
 
 import { Breadcrumb, Layout, Menu, theme } from "antd";
 import { ROUTE_CONSTANTS } from "@/utilis/constants";
-import { usePathname, useRouter } from "next/navigation";
+import { useParams, usePathname, useRouter } from "next/navigation";
 const {Sider, Content } = Layout;
 import "../../styles/cabinet.css";
+
+const keyCreator = (communityId: string) => {
+    const communityMenuItems = [
+        {
+            label: 'Back to Cabinet',
+            key: ROUTE_CONSTANTS.CABINET
+        },
+        {
+            label: 'Overview',
+            key: `${ROUTE_CONSTANTS.COMMUNITY}/${communityId}`
+        },          
+        {
+            label: 'Issues',
+            key: `${ROUTE_CONSTANTS.COMMUNITY}/${communityId}/${ROUTE_CONSTANTS.ISSUES}`
+        },
+        {
+            label: 'Members',
+            key: `${ROUTE_CONSTANTS.COMMUNITY}/${communityId}/${ROUTE_CONSTANTS.MEMBERS}`
+        },
+        ]
+    return communityMenuItems;    
+}
 
 const menuItems = [
     {
@@ -23,12 +45,12 @@ const menuItems = [
         label: '+ Join Community',
         key: ROUTE_CONSTANTS.JOINCOMMUNITY
     }
-]
+];
 
 const CabinetLayout = ({children}: {children: React.ReactNode}) => {
     const {push} = useRouter();
     const pathname = usePathname();
-
+    const { communityId } = useParams();
     const {
         token: { colorBgContainer, borderRadiusLG },
     } = theme.useToken();
@@ -42,7 +64,7 @@ const CabinetLayout = ({children}: {children: React.ReactNode}) => {
             <Sider width={200} style={{backgroundColor:colorBgContainer}} collapsible>
                 <Menu
                 mode="inline"
-                items={menuItems}
+                items={communityId ? keyCreator(communityId as string) : menuItems}
                 selectedKeys={[pathname]}
                 onSelect={handleNavigate}
                 />
