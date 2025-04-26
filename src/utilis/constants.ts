@@ -10,7 +10,8 @@ export const ROUTE_CONSTANTS={
     JOINCOMMUNITY:'/Cabinet/JoinCommunity/join',
     COMMUNITY: '/Cabinet/Community',
     ISSUES: 'Issues',
-    MEMBERS: 'Members'
+    MEMBERS: 'Members',
+    MESSAGES: 'Messages'
 };
 export const FIRESTORE_PATH_NAMES = {
     COLLABORATIONS: 'collaborations',

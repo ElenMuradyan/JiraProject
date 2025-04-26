@@ -13,6 +13,8 @@ import { community } from "@/types/communities";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import image from '../../../../public/undraw_online-dating_w9n9.svg';
+
 import '../../../styles/auth.css';
 
 export default function JoinCommunity() {
@@ -46,7 +48,7 @@ export default function JoinCommunity() {
                             uid: userData.uid,
                             firstName: userData.firstName,
                             lastName: userData.lastName,
-                            imgUrl: userData.imgUrl,                        
+                            imgUrl: userData.imgUrl ? userData.imgUrl : image.src,                    
                         }
                     ],
                 });

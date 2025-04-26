@@ -5,6 +5,10 @@ import { ROUTE_CONSTANTS } from "@/utilis/constants";
 import { useParams, usePathname, useRouter } from "next/navigation";
 const {Sider, Content } = Layout;
 import "../../styles/cabinet.css";
+import { generateMessagesMenu } from "@/utilis/helpers/generateMessages";
+import { useSelector } from "react-redux";
+import { RootState } from "@/state-management/redux/store";
+import { useEffect, useState } from "react";
 
 const keyCreator = (communityId: string) => {
     const communityMenuItems = [
@@ -24,11 +28,15 @@ const keyCreator = (communityId: string) => {
             label: 'Members',
             key: `${ROUTE_CONSTANTS.COMMUNITY}/${communityId}/${ROUTE_CONSTANTS.MEMBERS}`
         },
+        {
+            label: 'Messages',
+            key: `${ROUTE_CONSTANTS.COMMUNITY}/${communityId}/${ROUTE_CONSTANTS.MESSAGES}`
+        },
         ]
     return communityMenuItems;    
 }
 
-const menuItems = [
+const defaultMenuItems = [
     {
         label: 'Personal Information',
         key: ROUTE_CONSTANTS.PROFILE
@@ -50,7 +58,9 @@ const menuItems = [
 const CabinetLayout = ({children}: {children: React.ReactNode}) => {
     const {push} = useRouter();
     const pathname = usePathname();
-    const { communityId } = useParams();
+    const { communityId, chatId } = useParams();
+    const [menuItems, setMenuItems] = useState<{ label: string; key: string }[]>(defaultMenuItems);
+    const { userData } = useSelector((state: RootState) => state.userProfile.authUserInfo);
     const {
         token: { colorBgContainer, borderRadiusLG },
     } = theme.useToken();
@@ -59,19 +69,44 @@ const CabinetLayout = ({children}: {children: React.ReactNode}) => {
         push(key);
     };
 
+    useEffect(() => {
+        const loadMenuItems = async () => {
+          try {                
+            if (communityId) {
+              if (userData?.messages && pathname.includes(ROUTE_CONSTANTS.MESSAGES)) {
+                const generated = await generateMessagesMenu({
+                  chatIds: userData.messages,
+                  uid: userData.uid,
+                  communityId: communityId as string,
+                });
+                
+                setMenuItems(generated);
+              } else {
+                setMenuItems(keyCreator(communityId as string));
+              }
+            } else {
+              setMenuItems(defaultMenuItems);
+            }
+          } catch (error) {
+            console.error('Failed to load menu:', error);
+          } 
+        };
+    
+        loadMenuItems();
+      }, [communityId, chatId, userData, pathname]);
+    
    return(
     <div className="cabinet_layout_main_container">
             <Sider width={200} style={{backgroundColor:colorBgContainer}} collapsible>
                 <Menu
                 mode="inline"
-                items={communityId ? keyCreator(communityId as string) : menuItems}
+                items={menuItems}
                 selectedKeys={[pathname]}
                 onSelect={handleNavigate}
                 />
             </Sider>
             <Layout style={{padding:'0 24px 24px'}}>
                 <Breadcrumb
-                 items={[{ title: 'Cabinet' },{ title: 'Profile' }]}
                  style={{ margin: '16px 0'}}
                 />
                     <Content style={{

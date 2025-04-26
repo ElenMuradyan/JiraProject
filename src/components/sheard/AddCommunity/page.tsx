@@ -14,6 +14,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { PlusOutlined } from '@ant-design/icons';
 import InviteModal from "../InviteModal/page";
 import { fetchUserProfileInfo } from "@/state-management/redux/slices/userSlice";
+import image from '../../../../public/undraw_online-dating_w9n9.svg';
 
 export default function AddCommunity () {
     const [submitting, setSubmitting] = useState(false);
@@ -35,7 +36,7 @@ export default function AddCommunity () {
                         uid: userData.uid,
                         firstName: userData.firstName,
                         lastName: userData.lastName,
-                        imgUrl: userData.imgUrl,                    
+                        imgUrl: userData.imgUrl ? userData.imgUrl : image.src,                    
                     }],
                     id: ''
                 };
@@ -56,7 +57,7 @@ export default function AddCommunity () {
                 dispatch(fetchUserProfileInfo()); 
                 return data.id;    
             }catch(err: any){                
-                console.log('Error while adding community');  
+                console.log(err.message);  
             }finally{
                 setSubmitting(false);
             }

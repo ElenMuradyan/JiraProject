@@ -11,14 +11,19 @@ import { fetchCollab } from "@/state-management/redux/slices/collabSlice";
 import { GrStarOutline } from "react-icons/gr";
 import { db } from "@/services/firebase/firebase";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
-import { FIRESTORE_PATH_NAMES } from "@/utilis/constants";
+import { FIRESTORE_PATH_NAMES, ROUTE_CONSTANTS } from "@/utilis/constants";
 import { userData } from "@/types/userState";
+import { useRouter } from "next/navigation";
+import { generateChatId } from "@/utilis/helpers/generateChatId";
+import { generateUid } from "@/utilis/helpers/generateUid";
+import { fetchUserProfileInfo } from "@/state-management/redux/slices/userSlice";
 
 export default function MembersPage() {
   const { collab } = useSelector((state: RootState) => state.collab);
   const { userData } = useSelector((state: RootState) => state.userProfile.authUserInfo);
   const dispatch = useDispatch<AppDispatch>();
   const { communityId } = useParams();
+  const { push } = useRouter();
   const isCommunityOwner = userData?.uid && collab?.ownerId === userData.uid;
 
   useEffect(() => {
@@ -48,6 +53,23 @@ export default function MembersPage() {
         });
         dispatch(fetchCollab(communityId));
     }
+  };
+
+  const navigate = async (uid1: string, uid2: string) => {
+    const generatedId = generateChatId(uid1, uid2);
+
+    if(userData && !userData.messages.includes(generatedId)){
+        const user1 = doc(db, FIRESTORE_PATH_NAMES.REGISTERED_USERS, uid1);
+        const user2 = doc(db, FIRESTORE_PATH_NAMES.REGISTERED_USERS, uid2);
+        await updateDoc(user1, {
+            messages: [...userData.messages, generatedId]
+        });
+        await updateDoc(user2, {
+            messages: [...userData.messages, generatedId]
+        });
+        dispatch(fetchUserProfileInfo()); 
+    };
+    push(`${ROUTE_CONSTANTS.COMMUNITY}/${communityId}/${ROUTE_CONSTANTS.MESSAGES}/${generatedId}`);
   }
   
   return (
@@ -70,7 +92,7 @@ export default function MembersPage() {
                         </Tooltip>
                         )}
                     </div>
-                    {userData.uid !== member.uid && <Button type="primary">Start Chat</Button>}
+                    {userData.uid !== member.uid && <Button type="primary" onClick={() => navigate(userData.uid, member.uid)}>Start Chat</Button>}
                     {isCommunityOwner && !isOwner && <Button danger onClick={() => handleDelete(member.uid)}>Delete Member</Button>}
                     </Flex>
                 </Card>

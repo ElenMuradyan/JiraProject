@@ -14,7 +14,7 @@ export const handleRegister = async ({values, setLoading, push}: RegisterFunctio
 
         const createDoc = doc(db, FIRESTORE_PATH_NAMES.REGISTERED_USERS, uid);
         await setDoc(createDoc, {
-            uid, firstName, lastName, email, collaborations: collabId ? [ collabId ] : []
+            uid, firstName, lastName, email, collaborations: collabId ? [ collabId ] : [], messages: []
         });
 
         push(ROUTE_CONSTANTS.LOGIN);

@@ -15,4 +15,5 @@ export interface userData  {
     email: string,
     collaborations: string[],
     phone?: string,
+    messages: string[]
 }
