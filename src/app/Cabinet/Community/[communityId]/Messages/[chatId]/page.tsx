@@ -9,6 +9,7 @@ import { RootState } from '@/state-management/redux/store';
 import { realTimeDB } from '@/services/firebase/firebase';
 import { onChildAdded, push, ref } from 'firebase/database';
 import image from '../../../../../../../public/undraw_online-dating_w9n9.svg';
+
 import '../../../../../../styles/chat.css';
 
 export default function ChatPage() {

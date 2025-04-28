@@ -1,13 +1,10 @@
 'use client';
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useParams } from "next/navigation";
-import { Avatar, Button } from "antd";
-import { InfoCircleOutlined } from "@ant-design/icons";
-import { community, member } from "@/types/communities";
+import { Avatar } from "antd";
+import { member } from "@/types/communities";
 import { setFullNameLetter } from "@/utilis/helpers/getLetters";
-import { db } from "@/services/firebase/firebase";
-import { doc, getDoc } from "firebase/firestore";
 import { useDispatch } from "react-redux";
 import { AppDispatch, RootState } from "@/state-management/redux/store";
 import { fetchCollab } from "@/state-management/redux/slices/collabSlice";

@@ -15,6 +15,7 @@ import { PlusOutlined } from '@ant-design/icons';
 import InviteModal from "../InviteModal/page";
 import { fetchUserProfileInfo } from "@/state-management/redux/slices/userSlice";
 import image from '../../../../public/undraw_online-dating_w9n9.svg';
+import { updateUser } from "@/services/firebase/databaseActions";
 
 export default function AddCommunity () {
     const [submitting, setSubmitting] = useState(false);
@@ -46,8 +47,7 @@ export default function AddCommunity () {
                 const ref = doc(db, FIRESTORE_PATH_NAMES.COLLABORATIONS, data.id);
                 await updateDoc(ref, {id: data.id});  
 
-                const userRef = doc(db, FIRESTORE_PATH_NAMES.REGISTERED_USERS, userData.uid);
-                await updateDoc(userRef, {
+                await updateUser(userData.uid, {
                     collaborations: [...userData.collaborations, data.id]
                 });
 

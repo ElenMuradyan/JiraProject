@@ -16,6 +16,7 @@ import { useRouter } from "next/navigation";
 import image from '../../../../public/undraw_online-dating_w9n9.svg';
 
 import '../../../styles/auth.css';
+import { updateUser } from "@/services/firebase/databaseActions";
 
 export default function JoinCommunity() {
     const { userData } = useSelector((state: RootState) => state.userProfile.authUserInfo);
@@ -34,8 +35,7 @@ export default function JoinCommunity() {
     const onFinish = async ({ collabId }: { collabId: string }) => {
         if (userData) {
             try {
-                const userRef = doc(db, FIRESTORE_PATH_NAMES.REGISTERED_USERS, userData.uid);
-                await updateDoc(userRef, {
+                await updateUser(userData.uid, {
                     collaborations: [...userData.collaborations, collabId],
                 });
 

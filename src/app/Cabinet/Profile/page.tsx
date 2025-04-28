@@ -1,16 +1,14 @@
 'use client'
 import { useEffect, useState } from 'react';
-import { Form, Input, Button, notification, message } from 'antd';
-import { updateDoc, doc } from 'firebase/firestore';
+import { Form, Input, Button } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
 import { userData } from '@/types/userState';
-import { FIRESTORE_PATH_NAMES } from '@/utilis/constants';
-import { db } from '@/services/firebase/firebase';
 import { AppDispatch, RootState } from '@/state-management/redux/store';
 import { fetchUserProfileInfo, setImageUrl } from '@/state-management/redux/slices/userSlice';
 import ImgUpload from '@/components/sheard/ImgUpload';
 import { UploadRequestOption } from 'rc-upload/lib/interface';
 import { handleImageUpload } from '@/features/ImageUpload/imageUpload';
+import { updateUser } from '@/services/firebase/databaseActions';
 import '../../../styles/profile.css';
 
 const Profile = () => {
@@ -32,13 +30,12 @@ const Profile = () => {
               };
 
             try{
-                const userDocRef = doc(db, FIRESTORE_PATH_NAMES.REGISTERED_USERS, userData.uid);
-                await updateDoc(userDocRef, sanitizedValues);
+                await updateUser(userData.uid, sanitizedValues);
                 dispatch(fetchUserProfileInfo());
             }catch(err: any){
                 console.log(err.message); 
             }finally{
-                setButtonLoading(false)
+                setButtonLoading(false);
             }    
         }
     };
@@ -46,8 +43,7 @@ const Profile = () => {
     const updateUserProfileImg = async (imgUrl: string | null | void) => {
         if(userData){
             try{
-                const userDocRef = doc ( db, FIRESTORE_PATH_NAMES.REGISTERED_USERS, userData.uid);
-                await updateDoc(userDocRef, { imgUrl: imgUrl ? imgUrl : null });
+                updateUser(userData.uid, { imgUrl: imgUrl ? imgUrl : null });
             }catch(err: any){
                 console.log(err.message);
             }    

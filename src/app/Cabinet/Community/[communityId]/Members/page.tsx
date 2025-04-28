@@ -4,7 +4,7 @@ import { Avatar, Button, Card, Flex, Tooltip } from "antd";
 import { useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/state-management/redux/store";
 import { community, member } from "@/types/communities";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { useParams } from "next/navigation";
 import { fetchCollab } from "@/state-management/redux/slices/collabSlice";
@@ -15,8 +15,8 @@ import { FIRESTORE_PATH_NAMES, ROUTE_CONSTANTS } from "@/utilis/constants";
 import { userData } from "@/types/userState";
 import { useRouter } from "next/navigation";
 import { generateChatId } from "@/utilis/helpers/generateChatId";
-import { generateUid } from "@/utilis/helpers/generateUid";
 import { fetchUserProfileInfo } from "@/state-management/redux/slices/userSlice";
+import { getUser, updateUser } from "@/services/firebase/databaseActions";
 
 export default function MembersPage() {
   const { collab } = useSelector((state: RootState) => state.collab);
@@ -38,12 +38,8 @@ export default function MembersPage() {
 
   const handleDelete = async (uid: string) => {
     if(communityId && typeof communityId === 'string'){
-        const user = doc(db, FIRESTORE_PATH_NAMES.REGISTERED_USERS, uid);
-        const userSnap = await getDoc(user);
-        const { collaborations } = userSnap.data() as userData;
-        await updateDoc(user, {
-            collaborations: collaborations.filter((i: string) => i !== communityId)
-        });
+        const { collaborations } = await getUser(uid);
+        await updateUser(uid, {collaborations: collaborations.filter((i: string) => i !== communityId)})
     
         const collaboration = doc(db, FIRESTORE_PATH_NAMES.COLLABORATIONS, communityId);
         const collabSnap = await getDoc(collaboration);
@@ -59,14 +55,10 @@ export default function MembersPage() {
     const generatedId = generateChatId(uid1, uid2);
 
     if(userData && !userData.messages.includes(generatedId)){
-        const user1 = doc(db, FIRESTORE_PATH_NAMES.REGISTERED_USERS, uid1);
-        const user2 = doc(db, FIRESTORE_PATH_NAMES.REGISTERED_USERS, uid2);
-        await updateDoc(user1, {
-            messages: [...userData.messages, generatedId]
-        });
-        await updateDoc(user2, {
-            messages: [...userData.messages, generatedId]
-        });
+        const { messages } = await getUser(uid2);
+
+        await updateUser(uid1, {messages: [...userData.messages, generatedId]});
+        await updateUser(uid2, {messages: [...messages, generatedId]});
         dispatch(fetchUserProfileInfo()); 
     };
     push(`${ROUTE_CONSTANTS.COMMUNITY}/${communityId}/${ROUTE_CONSTANTS.MESSAGES}/${generatedId}`);
