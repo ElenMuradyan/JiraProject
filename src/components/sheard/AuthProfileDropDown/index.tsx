@@ -1,36 +1,21 @@
 'use client'
 
 import { Avatar, Dropdown, Typography, Flex, theme } from "antd";
-import { signOut } from "firebase/auth";
-import { useDispatch } from "react-redux";
 import { userData } from "@/types/userState";
-import { auth } from "@/services/firebase/firebase";
-import { setIsAuth } from "@/state-management/redux/slices/userSlice";
-import { AppDispatch } from "@/state-management/redux/store";
 import { useRouter } from "next/navigation";
 import { ROUTE_CONSTANTS } from "@/utilis/constants";
 import avatar from '../../../../public/undraw_web-devices_i15y.svg';
-import '../../../styles/dropDown.css';
 import { setFullNameLetter } from "@/utilis/helpers/getLetters";
+import { handleLogout } from "@/utilis/helpers/handleLogout";
+import '../../../styles/dropDown.css';
 
 const { Text } = Typography;
 const { useToken } = theme; 
 
 const AuthProfileDropDown = ({ userProfileInfo }: {userProfileInfo: userData}) => {
-    const dispatch = useDispatch<AppDispatch>();
     const { push } = useRouter();
     const { token } = useToken();
 
-    const handleSignOut = async () => {
-        try{
-            await signOut(auth);
-            dispatch(setIsAuth(false));
-        }catch(error){
-            console.log(error);
-        }
-    };
-
-    
     const items = [
         {
             label: 'Profile',
@@ -45,7 +30,7 @@ const AuthProfileDropDown = ({ userProfileInfo }: {userProfileInfo: userData}) =
         {
             label: 'Logout',
             key:'logout',
-            onClick:handleSignOut,
+            onClick: handleLogout,
         }
     ]
     return (

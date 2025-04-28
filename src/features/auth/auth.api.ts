@@ -28,15 +28,31 @@ export const handleRegister = async ({values, setLoading, push}: RegisterFunctio
 
 export const handleLogin = async ({values, setLoading, push, dispatch}: RegisterFunctionProps) => {
     setLoading(true);
-    
+
     try{        
     const { email, password } = values;
     
-    await signInWithEmailAndPassword( auth, email, password );
+    const user = await signInWithEmailAndPassword( auth, email, password );
     if(dispatch){
         dispatch(fetchUserProfileInfo());
-    }
-    push(ROUTE_CONSTANTS.CABINET);
+    };
+
+    const res = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          uid: user.user.uid,
+        })
+      });
+
+      if (res.ok) {
+        push(ROUTE_CONSTANTS.HOME);
+      } else {
+        console.log('Authentication failed, please try again.');
+        // setError('Authentication failed, please try again.');
+      }
     }catch(error:any){
         console.log(error.message);
     }finally{
