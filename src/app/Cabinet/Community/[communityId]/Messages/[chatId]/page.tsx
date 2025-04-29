@@ -8,7 +8,7 @@ import { LoadingOutlined, SendOutlined } from '@ant-design/icons';
 import { RootState } from '@/state-management/redux/store';
 import { realTimeDB } from '@/services/firebase/firebase';
 import { onChildAdded, push, ref } from 'firebase/database';
-import image from '../../../../../../../public/undraw_online-dating_w9n9.svg';
+import image from '../../../../../../../public/avatar.jpg';
 
 import '../../../../../../styles/chat.css';
 

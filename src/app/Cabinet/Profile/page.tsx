@@ -31,7 +31,7 @@ const Profile = () => {
 
             try{
                 await updateUser(userData.uid, sanitizedValues);
-                dispatch(fetchUserProfileInfo());
+                dispatch(fetchUserProfileInfo(userData.uid));
             }catch(err: any){
                 console.log(err.message); 
             }finally{

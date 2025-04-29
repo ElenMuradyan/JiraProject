@@ -1,6 +1,7 @@
 input {
     height: 90%;
     width: 100%;
+
   }
   
   input:focus,
@@ -49,6 +50,8 @@ input {
   .inputContainer {
     width: 90%;
     display: flex;
+    border: 1px solid #006cff;
+    border-radius: 12px;
     align-items: center;
     background-color: #ffffff45;
     height: 8vh;

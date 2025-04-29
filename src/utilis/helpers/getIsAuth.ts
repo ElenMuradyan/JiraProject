@@ -6,7 +6,7 @@ export async function getIsAuth() {
         }
     });
 
-    const { isAuth } = await res.json();
+    const { isAuth, uid } = await res.json();
 
-    return isAuth;
+    return {isAuth, uid: uid.value};
 }

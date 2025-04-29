@@ -14,8 +14,9 @@ import { useDispatch, useSelector } from "react-redux";
 import { PlusOutlined } from '@ant-design/icons';
 import InviteModal from "../InviteModal/page";
 import { fetchUserProfileInfo } from "@/state-management/redux/slices/userSlice";
-import image from '../../../../public/undraw_online-dating_w9n9.svg';
+import image from '../../../../public/avatar.jpg';
 import { updateUser } from "@/services/firebase/databaseActions";
+import { updateCollabs } from "@/utilis/helpers/updatecollabs";
 
 export default function AddCommunity () {
     const [submitting, setSubmitting] = useState(false);
@@ -50,11 +51,11 @@ export default function AddCommunity () {
                 await updateUser(userData.uid, {
                     collaborations: [...userData.collaborations, data.id]
                 });
-
                 form.resetFields();  
                 setId(data.id);
                 setOpen(true);  
-                dispatch(fetchUserProfileInfo()); 
+                await dispatch(fetchUserProfileInfo(userData.uid)); 
+                await updateCollabs(userData.uid, [...userData.collaborations, data.id]);
                 return data.id;    
             }catch(err: any){                
                 console.log(err.message);  

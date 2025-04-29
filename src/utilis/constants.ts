@@ -7,7 +7,7 @@ export const ROUTE_CONSTANTS={
     CABINET:'/Cabinet',
     PROFILE:'/Cabinet/Profile',
     ADDCOMMUNITY:'/Cabinet/AddCommunity',
-    JOINCOMMUNITY:'/Cabinet/JoinCommunity/join',
+    JOINCOMMUNITY:'/Cabinet/JoinCommunity',
     COMMUNITY: '/Cabinet/Community',
     ISSUES: 'Issues',
     MEMBERS: 'Members',

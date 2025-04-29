@@ -4,6 +4,7 @@ import { auth, db } from "@/services/firebase/firebase";
 import { doc, getDoc } from "firebase/firestore";
 import { FIRESTORE_PATH_NAMES } from "@/utilis/constants";
 import { stateInterface, userData } from "@/types/userState";
+import { getUser } from "@/services/firebase/databaseActions";
 
 const initialState: stateInterface = {
     loading: true,
@@ -14,30 +15,16 @@ const initialState: stateInterface = {
     error: null
 }
 
-export const fetchUserProfileInfo = createAsyncThunk<userData | null>(
+export const fetchUserProfileInfo = createAsyncThunk<userData | null, string>(
     'user/fetchUserProfileInfo',
-    async () => {
-      return new Promise((resolve, reject) => {
-        const unsubscribe = onAuthStateChanged(auth, async (user) => {
-          unsubscribe(); 
-  
-          if (user) {
-            try {
-              const userRef = doc(db, FIRESTORE_PATH_NAMES.REGISTERED_USERS, user.uid);
-              const userSnap = await getDoc(userRef);
-              if (userSnap.exists()) {
-                resolve(userSnap.data() as userData);
-              } else {
-                resolve(null);
-              }
-            } catch (err: any) {
-              reject(err.message);
-            }
-          } else {
-            reject('No user found');
-          }
-        });
-      });
+    async (uid: string, { rejectWithValue }) => {
+      try {
+        const data = await getUser(uid);
+        return data;  
+      }catch(err: any){
+        console.log(err.message);
+        return rejectWithValue(null);
+      }
     }
   );
   

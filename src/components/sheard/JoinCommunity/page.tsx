@@ -8,19 +8,23 @@ import { useForm } from "antd/es/form/Form";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { UserAddOutlined } from '@ant-design/icons';
 import { useSelector } from "react-redux";
-import { RootState } from "@/state-management/redux/store";
+import { AppDispatch, RootState } from "@/state-management/redux/store";
 import { community } from "@/types/communities";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import image from '../../../../public/undraw_online-dating_w9n9.svg';
+import image from '../../../../public/avatar.jpg';
 
 import '../../../styles/auth.css';
 import { updateUser } from "@/services/firebase/databaseActions";
+import { updateCollabs } from "@/utilis/helpers/updatecollabs";
+import { useDispatch } from "react-redux";
+import { fetchUserProfileInfo } from "@/state-management/redux/slices/userSlice";
 
 export default function JoinCommunity() {
     const { userData } = useSelector((state: RootState) => state.userProfile.authUserInfo);
     const [form] = useForm();
+    const dispatch = useDispatch<AppDispatch>();
     const { joinID } = useParams();    
     const [inputValue, setInputValue] = useState(joinID !== "join" ? joinID : "");
     const { push } = useRouter();
@@ -52,6 +56,8 @@ export default function JoinCommunity() {
                         }
                     ],
                 });
+                await dispatch(fetchUserProfileInfo(userData.uid));
+                await updateCollabs(userData.uid, [...userData.collaborations, collabId]);
                 form.setFieldValue('collabId', '');
                 push(`${ROUTE_CONSTANTS.COMMUNITY}/${collab.id}`);
             } catch (err: any) {

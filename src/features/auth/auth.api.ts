@@ -34,7 +34,7 @@ export const handleLogin = async ({values, setLoading, push, dispatch}: Register
     
     const user = await signInWithEmailAndPassword( auth, email, password );
     if(dispatch){
-        dispatch(fetchUserProfileInfo());
+        dispatch(fetchUserProfileInfo(user.user.uid));
     };
 
     const res = await fetch('/api/auth/login', {

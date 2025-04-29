@@ -17,6 +17,7 @@ import { useRouter } from "next/navigation";
 import { generateChatId } from "@/utilis/helpers/generateChatId";
 import { fetchUserProfileInfo } from "@/state-management/redux/slices/userSlice";
 import { getUser, updateUser } from "@/services/firebase/databaseActions";
+import { updateCollabs } from "@/utilis/helpers/updatecollabs";
 
 export default function MembersPage() {
   const { collab } = useSelector((state: RootState) => state.collab);
@@ -40,7 +41,7 @@ export default function MembersPage() {
     if(communityId && typeof communityId === 'string'){
         const { collaborations } = await getUser(uid);
         await updateUser(uid, {collaborations: collaborations.filter((i: string) => i !== communityId)})
-    
+        await updateCollabs(uid, collaborations.filter((i: string) => i !== communityId));
         const collaboration = doc(db, FIRESTORE_PATH_NAMES.COLLABORATIONS, communityId);
         const collabSnap = await getDoc(collaboration);
         const { members } = collabSnap.data() as community;
@@ -59,7 +60,7 @@ export default function MembersPage() {
 
         await updateUser(uid1, {messages: [...userData.messages, generatedId]});
         await updateUser(uid2, {messages: [...messages, generatedId]});
-        dispatch(fetchUserProfileInfo()); 
+        dispatch(fetchUserProfileInfo(userData.uid)); 
     };
     push(`${ROUTE_CONSTANTS.COMMUNITY}/${communityId}/${ROUTE_CONSTANTS.MESSAGES}/${generatedId}`);
   }

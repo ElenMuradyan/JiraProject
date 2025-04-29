@@ -14,6 +14,16 @@ export async function GET() {
         );
 
         (await cookies()).set(
+            'collaborations', JSON.stringify([]), {
+                httpOnly: true,
+                secure: true,
+                sameSite: 'strict',
+                maxAge: 60*60*24,
+                path: '/'
+            }
+        );
+
+        (await cookies()).set(
             'uid', '', {
                 httpOnly: true,
                 secure: true,

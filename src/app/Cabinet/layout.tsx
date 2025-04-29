@@ -51,7 +51,7 @@ const defaultMenuItems = [
     },
     {
         label: '+ Join Community',
-        key: ROUTE_CONSTANTS.JOINCOMMUNITY
+        key: `${ROUTE_CONSTANTS.JOINCOMMUNITY}/join`
     }
 ];
 
