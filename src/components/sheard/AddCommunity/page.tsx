@@ -53,9 +53,9 @@ export default function AddCommunity () {
                 });
                 form.resetFields();  
                 setId(data.id);
-                setOpen(true);  
                 await dispatch(fetchUserProfileInfo(userData.uid)); 
                 await updateCollabs(userData.uid, [...userData.collaborations, data.id]);
+                setOpen(true);  
                 return data.id;    
             }catch(err: any){                
                 console.log(err.message);  

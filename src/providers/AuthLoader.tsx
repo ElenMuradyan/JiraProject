@@ -9,7 +9,6 @@ import { useDispatch } from "react-redux";
 
 export default function AuthLoader({children}: {children: React.ReactNode}) {
     const dispatch = useDispatch<AppDispatch>();
-    const { loading } = useSelector((state: RootState) => state.userProfile);
     const [ isAuth, setIsAuth ] = useState<boolean | undefined>(false);
     const [ uid, setUid ] = useState<string>('');
 
@@ -32,7 +31,7 @@ export default function AuthLoader({children}: {children: React.ReactNode}) {
         if(isAuth && uid){
             dispatch(fetchUserProfileInfo(uid));
         }
-    }, [isAuth, uid])
+    }, [isAuth, uid, dispatch])
 
     return(
         <>{children}</>

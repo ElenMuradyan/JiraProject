@@ -58,8 +58,8 @@ export default function JoinCommunity() {
                 });
                 await dispatch(fetchUserProfileInfo(userData.uid));
                 await updateCollabs(userData.uid, [...userData.collaborations, collabId]);
-                form.setFieldValue('collabId', '');
                 push(`${ROUTE_CONSTANTS.COMMUNITY}/${collab.id}`);
+                form.setFieldValue('collabId', '');
             } catch (err: any) {
                 console.log(err.message);
             }

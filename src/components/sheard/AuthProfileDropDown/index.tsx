@@ -30,7 +30,7 @@ const AuthProfileDropDown = ({ userProfileInfo }: {userProfileInfo: userData}) =
         {
             label: 'Logout',
             key:'logout',
-            onClick: handleLogout,
+            onClick: () => handleLogout(),
         }
     ]
     return (

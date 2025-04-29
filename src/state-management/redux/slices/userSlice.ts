@@ -7,7 +7,7 @@ import { stateInterface, userData } from "@/types/userState";
 import { getUser } from "@/services/firebase/databaseActions";
 
 const initialState: stateInterface = {
-    loading: true,
+    loading: false,
     authUserInfo: {
         isAuth: false,
         userData: null,
@@ -47,11 +47,15 @@ const userProfileSlice = createSlice({
             state.loading = true;
         })
         .addCase(fetchUserProfileInfo.fulfilled, (state, action) =>{
+          console.log('fullfiled');
+
             state.loading = false;
             state.authUserInfo.userData = action.payload;
             state.authUserInfo.isAuth = true;
         })
         .addCase(fetchUserProfileInfo.rejected, (state, action) =>{
+          console.log('rejected');
+          
             state.loading = false;
             state.authUserInfo.isAuth = false;
             state.error = action.payload as string;

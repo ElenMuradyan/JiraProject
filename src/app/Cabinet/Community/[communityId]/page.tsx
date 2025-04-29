@@ -32,12 +32,6 @@ export default function CommunityPage() {
     return <div className="p-8">Loading community data...</div>;
   }
 
-  useEffect(() => {
-    if(userData){
-      dispatch(fetchUserProfileInfo(userData.uid));
-    }
-  }, []);
-
   return (
     <div className="p-8 max-w-2xl mx-auto">
       <div className="flex items-center justify-between mb-4">
