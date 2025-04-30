@@ -116,7 +116,7 @@ const CabinetLayout = ({children}: {children: React.ReactNode}) => {
             />
         </Sider>
         <Layout style={{ padding: "0 16px 16px", flex: 1, position: "relative" }}>
-                    {!collapsed && window.innerWidth < 800 && (
+                    {!collapsed && typeof window !== 'undefined' && window.innerWidth < 800 && (
                         <div
                             style={{
                                 position: "absolute",

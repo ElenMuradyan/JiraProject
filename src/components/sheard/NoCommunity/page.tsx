@@ -10,7 +10,7 @@ import Image from "next/image";
 export default function NoCommunity() {
     return (
         <Flex align="center" justify="center" vertical gap={16} style={{ width: '100%', height: '70vh' }}>
-        {window.innerWidth > 1250 && <Image width={600} height={600} src={image.src} alt="image"/>}
+        {typeof window !== 'undefined' && window.innerWidth > 1250 && <Image width={600} height={600} src={image.src} alt="image"/>}
         <Flex align="center" justify="center" vertical gap={16} style={{ maxWidth: 400, zIndex: 0 }}>
             <h1 className="styled-heading">SEEMS LIKE YOU DON'T HAVE ANY COMMUNITIES</h1>
             <JoinCommunity />
