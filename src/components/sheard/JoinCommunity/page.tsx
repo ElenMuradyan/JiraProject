@@ -1,7 +1,7 @@
 'use client'
 
 import { db } from "@/services/firebase/firebase";
-import { flex, formItemStyle, formStylesForCabinet, inputStyles, iStyle, joinInputStyles } from "@/styles/constants";
+import { flex, formItemStyle, formStyles, formStylesForCabinet, inputStyles, iStyle, joinInputStyles } from "@/styles/constants";
 import { FIRESTORE_PATH_NAMES, ROUTE_CONSTANTS } from "@/utilis/constants";
 import { Button, Flex, Form, Input } from "antd";
 import { useForm } from "antd/es/form/Form";
@@ -67,7 +67,8 @@ export default function JoinCommunity() {
     };
 
     return (
-        <Form style={formStylesForCabinet} onFinish={onFinish} form={form}>
+        <Form style={formStyles} onFinish={onFinish} form={form}>
+            <h1 className="gradient-text">JOIN COMMUNITY</h1>
             <Flex gap={10} style={{width: 400}} vertical> 
             <Form.Item
                 style={formItemStyle}

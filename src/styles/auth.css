@@ -158,7 +158,6 @@ form.sign-up-form{
     transform: translateX(800px);
 }
 
-/* ANIMATION */
 
 .layout-container.sign-up-mode::before{
     transform: translate(100%, -50%);

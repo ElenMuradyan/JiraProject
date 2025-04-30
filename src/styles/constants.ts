@@ -32,6 +32,7 @@ export const joinInputStyles:CSSProperties = {
   fontWeight: 600,
   fontSize: "1.1rem",
   width: '380px',
+  padding: 20,
   height: "55px",
   lineHeight: "55px",
   color: "#333",

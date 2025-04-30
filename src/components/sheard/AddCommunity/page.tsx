@@ -77,13 +77,13 @@ export default function AddCommunity () {
         form={form}
         layout="vertical"
         onFinish={handleFinish}
-        style={formStyles}
         initialValues={{
             name: '',
             ownerId: '',
             description: '',
         }}
       >
+        <h1 className="gradient-text">ADD COMMIUNITY</h1>
         <Form.Item
           name="name"
           rules={[{ required: true, message: 'Please enter a community name' }]}

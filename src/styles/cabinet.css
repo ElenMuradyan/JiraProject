@@ -42,7 +42,10 @@
 
 .cabinet_layout_main_container{
     display: flex;
-    height: calc(100vh - 72px);   
+    height: calc(100vh - 72px); 
+    width: 100%; 
+    max-width: 100vw; 
+    overflow-x: hidden;    
 }
 
 .collabs{
@@ -56,4 +59,10 @@
 
 .collab{
     height: auto;
+}
+
+@media (max-width: 768px) {
+    .cabinet_layout_main_container {
+        flex-direction: column;
+    }
 }
