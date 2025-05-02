@@ -1,22 +1,20 @@
 'use client'
 
-import { useSearchParams } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import log from '../../../public/login.svg';
 import reg from '../../../public/register.svg';
-import '../../styles/auth.css';
-import { useRouter } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { ROUTE_CONSTANTS } from '@/utilis/constants';
+import '../../styles/auth.css';
 
 export default function AuthLayout({ children }: { children: React.ReactNode }) {
-  const searchParams = useSearchParams();
   const { push } = useRouter();
-  const [isSignUp, setIsSignUp] = useState(false)
+  const pathname = usePathname();  
+  const [isSignUp, setIsSignUp] = useState<boolean>(pathname === ROUTE_CONSTANTS.REGISTER);
 
   useEffect(() => {
-    const mode = searchParams.get('mode')
-    setIsSignUp(mode === 'signup')
-  }, [searchParams])
+    setIsSignUp(pathname === ROUTE_CONSTANTS.REGISTER);
+  }, [pathname]);
 
   return (
     <>

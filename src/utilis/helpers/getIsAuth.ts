@@ -8,5 +8,5 @@ export async function getIsAuth() {
 
     const { isAuth, uid } = await res.json();
 
-    return {isAuth, uid: uid.value};
+    return {isAuth, uid: uid?.value};
 }

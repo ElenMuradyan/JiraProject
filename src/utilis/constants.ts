@@ -2,8 +2,8 @@ export const regexpValidation = /^(?=.*\d)(?=.*[!@#$%^&*]).{6,16}$/;
 
 export const ROUTE_CONSTANTS={
     HOME: '/',
-    LOGIN:'/sign-in?mode=signin',
-    REGISTER:'/sign-up?mode=signup',
+    LOGIN:'/sign-in',
+    REGISTER:'/sign-up',
     CABINET:'/Cabinet',
     PROFILE:'/Cabinet/Profile',
     ADDCOMMUNITY:'/Cabinet/AddCommunity',
