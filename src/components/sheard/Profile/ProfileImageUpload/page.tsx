@@ -4,7 +4,7 @@ import { useSelector } from "react-redux";
 import { ImgUploadProps } from "@/types/imageUpload";
 import { RootState } from "@/state-management/redux/store";
 
-const ImgUpload = ({ uploading, handleUpload, handleRemove }: ImgUploadProps) => {
+const ProfileImageUpload = ({ uploading, handleUpload, handleRemove }: ImgUploadProps) => {
     const { userData } = useSelector((store: RootState) => store.userProfile.authUserInfo);
 
     const uploadButton = (
@@ -38,4 +38,4 @@ const ImgUpload = ({ uploading, handleUpload, handleRemove }: ImgUploadProps) =>
     )
 };
 
-export default ImgUpload;
+export default ProfileImageUpload;

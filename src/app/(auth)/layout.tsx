@@ -1,8 +1,8 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import log from '../../../public/login.svg';
-import reg from '../../../public/register.svg';
+import log from '../../../public/Images/login.svg';
+import reg from '../../../public/Images/register.svg';
 import { usePathname, useRouter } from 'next/navigation';
 import { ROUTE_CONSTANTS } from '@/utilis/constants';
 import '../../styles/auth.css';

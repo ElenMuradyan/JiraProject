@@ -1,6 +1,6 @@
 import React from 'react';
 import Image from 'next/image';
-import image from '../../../../../../public/undraw_reminders_ll1x.svg';
+import image from '../../../../../../public/Images/undraw_reminders_ll1x.svg';
 const DefaultPage = () => {
   return (
     <div className="flex justify-center items-center min-h-[calc(100vh-72px)] bg-gray-50">

@@ -9,17 +9,11 @@ import { useState } from "react";
 const ModalForm = ({ form, onFinish }: FormInterface) => {
     const [editorValue, setEditorValue] = useState("");
 
-    const handleEditorChange = (content: string) => {
-        console.log('ji');
-        
-      setEditorValue(content); 
-    };
-  
     return(
         <Form
         layout="vertical" 
         form={form} 
-        onFinish={onFinish}
+        onFinish={(values) => onFinish(values)}
         >
             <Form.Item 
             name='issueName'
@@ -62,7 +56,7 @@ const ModalForm = ({ form, onFinish }: FormInterface) => {
                 message: 'Please input Issue Describtion'
             }]}
             >
-                <Editor onChange={handleEditorChange} value={editorValue}/>
+                <Editor onChange={(val) => setEditorValue(val)} value={editorValue}/>
             </Form.Item>
             <Form.Item
             name='priority'

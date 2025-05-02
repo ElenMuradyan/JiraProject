@@ -1,14 +1,13 @@
 'use client'
 import { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
 import ChatContainer from '@/components/sheard/ChatContainer/page';
 import { useParams } from 'next/navigation';
 import { message } from '@/types/messages';
 import { LoadingOutlined, SendOutlined } from '@ant-design/icons';
+import { listenForMessages, sendMessage } from '@/features/chat/chatHandlers';
+import { useSelector } from 'react-redux';
 import { RootState } from '@/state-management/redux/store';
-import { realTimeDB } from '@/services/firebase/firebase';
-import { onChildAdded, push, ref } from 'firebase/database';
-import image from '../../../../../../../public/avatar.jpg';
+import { userData } from '@/types/userState';
 
 import '../../../../../../styles/chat.css';
 
@@ -20,40 +19,16 @@ export default function ChatPage() {
   const { chatId, communityId } = useParams();
 
     useEffect(() => { 
-        if(!chatId) return;
+        if(typeof chatId !== 'string' || typeof communityId !== 'string') return;
         setMessages([]); 
-        const messagesRef = ref(realTimeDB, `${communityId}/chats/${chatId}/messages`);
-        const unsubscribe = onChildAdded(messagesRef, (snapshot) => {
-            const newMessage = snapshot.val();
-            setMessages((prev) => [...prev, newMessage])
-        });
-
+        const unsubscribe = listenForMessages({communityId, chatId, onNewMessage: (newMessage) => {
+          setMessages((prev) => [...prev, newMessage]);
+        }});
+    
         return () => {
             unsubscribe();
         }
   }, [chatId]);  
-
-  const sendMessage = async () => {
-    if (!input.trim() || !chatId || !userData?.uid) return;
-
-    setLoading(true);
-
-    try{
-        const messagesRef = ref(realTimeDB, `${communityId}/chats/${chatId}/messages`);
-        await push(messagesRef, {
-            senderId: userData.uid,
-            imgUrl: userData.imgUrl ? userData.imgUrl : image.src,                    
-            text: input,
-            timestamp: Date.now()    
-        });
-
-        setInput('');
-    }catch(err: any){
-        console.error('Failed to send message', err.message);
-    }finally{
-        setLoading(false);
-    }
-  };
 
   return ( 
     <>
@@ -62,13 +37,13 @@ export default function ChatPage() {
           <input
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            onKeyDown={(e) => e.key === 'Enter' && !loading && sendMessage()}
+            onKeyDown={(e) => e.key === 'Enter' && !loading && typeof chatId === 'string' && typeof communityId === 'string' && sendMessage({input, chatId, communityId, setLoading, setInput, userData: userData as userData})}
             placeholder="Type a message..."
           />
           <div className='buttonContainer'>
           <button
             disabled={loading}
-            onClick={() => !loading ? sendMessage() : null}
+            onClick={() => !loading && typeof chatId === 'string' && typeof communityId === 'string' ? sendMessage({input, chatId, communityId, setLoading, setInput, userData: userData as userData}) : null}
           >
             {loading ? <LoadingOutlined /> : <SendOutlined />}
           </button>

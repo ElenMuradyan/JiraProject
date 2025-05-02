@@ -6,6 +6,7 @@ import { RootState } from "@/state-management/redux/store";
 export default function ChatContainer ({messages}: {messages: message[]}) {
     const messagesContainerRef = useRef<HTMLDivElement | null>(null);  
     const { userData } = useSelector((state: RootState) => state.userProfile.authUserInfo);
+    
     useEffect(() => {
       messagesContainerRef.current?.scrollIntoView({behavior: 'smooth'})
     }, [messages]);

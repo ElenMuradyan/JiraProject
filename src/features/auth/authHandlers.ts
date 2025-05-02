@@ -25,7 +25,6 @@ export const handleRegister = async ({values, setLoading, push}: RegisterFunctio
     };
 };
 
-
 export const handleLogin = async ({values, setLoading, push, dispatch}: RegisterFunctionProps) => {
     setLoading(true);
 
@@ -51,7 +50,6 @@ export const handleLogin = async ({values, setLoading, push, dispatch}: Register
         push(ROUTE_CONSTANTS.HOME);
       } else {
         console.log('Authentication failed, please try again.');
-        // setError('Authentication failed, please try again.');
       }
     }catch(error:any){
         console.log(error.message);

@@ -3,9 +3,10 @@
 import React from 'react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import image from '../../public/undraw_having-fun_kkeu.svg'
+import image from '../../public/Images/undraw_having-fun_kkeu.svg'
 import { ROUTE_CONSTANTS } from '@/utilis/constants';
 import { Button } from 'antd';
+
 const DefaultPage = () => {
   const { push } = useRouter();
 

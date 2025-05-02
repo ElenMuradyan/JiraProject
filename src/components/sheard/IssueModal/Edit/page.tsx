@@ -1,46 +1,23 @@
 'use client'
 
-import { Modal, Form, notification } from "antd";
+import { Modal, Form } from "antd";
 import ModalForm from "../Form/page";
-import { db } from "@/services/firebase/firebase";
-import { FIRESTORE_PATH_NAMES } from "@/utilis/constants";
-import { updateDoc, doc } from "firebase/firestore";
-import { fetchIssueData } from "@/state-management/redux/slices/issues";
-import { useDispatch } from "react-redux";
 import { useEffect, useState } from "react";
 import { EditInterface } from "@/types/editor";
 import { issue } from "@/types/issues";
 import { useParams } from "next/navigation";
+import { handleEditIssue } from "@/features/issues/issuesHandlers";
 import { AppDispatch } from "@/state-management/redux/store";
+import { useDispatch } from "react-redux";
 
 const EditIssueModal = ({isOpen, data, onClose}: EditInterface) => {
     const [ buttonLoading, setButtonLoading ] = useState(false);
     const [ form ] = Form.useForm();
-    const dispatch = useDispatch<AppDispatch>();
     const { communityId } = useParams();
-
-    const handleEditIssue = async (formData: issue) => {
-        if(data && communityId && typeof communityId === 'string'){
-            setButtonLoading(true);
-            try{
-                const { taskId } = data;
-                const issueDocRef = doc(db, FIRESTORE_PATH_NAMES.COLLABORATIONS, communityId, FIRESTORE_PATH_NAMES.ISSUES, taskId);
-                await updateDoc(issueDocRef, {formData});
-                notification.success({
-                    message: "Issue data successfully updated"
-                })
-                onClose();
-                communityId && dispatch(fetchIssueData(communityId as  string));
-            }catch(error){
-                console.log(error);
-            }finally{
-                setButtonLoading(false);
-            }    
-        }
-    }
+    const dispatch = useDispatch<AppDispatch>();
 
     useEffect(() => {
-        form.setFieldsValue(data)
+        form.setFieldsValue(data);
     }, [data]);
 
     return(
@@ -56,7 +33,7 @@ const EditIssueModal = ({isOpen, data, onClose}: EditInterface) => {
         >
             <ModalForm
             form={form}
-            onFinish={handleEditIssue}
+            onFinish={(formData) => handleEditIssue({formData, data: data as issue, communityId, setButtonLoading, onClose, dispatch})}
             />
         </Modal>
     )   

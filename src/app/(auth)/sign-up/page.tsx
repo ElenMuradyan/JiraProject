@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { Form, Button, Flex } from 'antd';
 import { FIRESTORE_PATH_NAMES, regexpValidation } from "@/utilis/constants";
-import { handleRegister } from "@/features/auth/auth.api";
+import { handleRegister } from "@/features/auth/authHandlers";
 import { useRouter } from "next/navigation";
 import { db } from "@/services/firebase/firebase";
 import { doc, getDoc } from "firebase/firestore";

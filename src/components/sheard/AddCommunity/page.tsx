@@ -1,22 +1,17 @@
 'use client'
 
-import { db } from "@/services/firebase/firebase";
 import { AppDispatch, RootState } from "@/state-management/redux/store";
-import { flex, formItemStyle, formStyles, inputStyles, iStyle, joinInputStyles } from "@/styles/constants";
-import { community } from "@/types/communities";
-import { FIRESTORE_PATH_NAMES } from "@/utilis/constants";
+import { flex, formItemStyle, inputStyles, iStyle, joinInputStyles } from "@/styles/constants";
 import { Button, Flex, Form, Input } from "antd";
 import { useForm } from "antd/es/form/Form";
 import TextArea from "antd/es/input/TextArea";
-import { addDoc, collection, doc, updateDoc } from "firebase/firestore";
 import { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { PlusOutlined } from '@ant-design/icons';
 import InviteModal from "../InviteModal/page";
-import { fetchUserProfileInfo } from "@/state-management/redux/slices/userSlice";
-import image from '../../../../public/avatar.jpg';
-import { updateUser } from "@/services/firebase/databaseActions";
-import { updateCollabs } from "@/utilis/helpers/updatecollabs";
+import { handleClose, handleFinishAdding } from "@/features/community/communityHandlers";
+import { useDispatch } from "react-redux";
+import { userData } from "@/types/userState";
 
 export default function AddCommunity () {
     const [submitting, setSubmitting] = useState(false);
@@ -26,57 +21,13 @@ export default function AddCommunity () {
     const [ id, setId ] = useState<string>('');
     const dispatch = useDispatch<AppDispatch>();
 
-    const handleFinish = async (values: community) => {
-        if(userData){
-            try{
-                setSubmitting(true);
-                const community = {
-                    name: values.name,
-                    ownerId: userData.uid,
-                    description: values.description,
-                    members: [{
-                        uid: userData.uid,
-                        firstName: userData.firstName,
-                        lastName: userData.lastName,
-                        imgUrl: userData.imgUrl ? userData.imgUrl : image.src,                    
-                    }],
-                    id: ''
-                };
-                
-                const communityRef = collection(db, FIRESTORE_PATH_NAMES.COLLABORATIONS);
-                const data = await addDoc(communityRef, community);
-                const ref = doc(db, FIRESTORE_PATH_NAMES.COLLABORATIONS, data.id);
-                await updateDoc(ref, {id: data.id});  
-
-                await updateUser(userData.uid, {
-                    collaborations: [...userData.collaborations, data.id]
-                });
-                form.resetFields();  
-                setId(data.id);
-                await dispatch(fetchUserProfileInfo(userData.uid)); 
-                await updateCollabs(userData.uid, [...userData.collaborations, data.id]);
-                setOpen(true);  
-                return data.id;    
-            }catch(err: any){                
-                console.log(err.message);  
-            }finally{
-                setSubmitting(false);
-            }
-        }
-    };
-
-    const handleClose = () => {
-        setOpen(false);
-        setId('');
-    }
-
     return(
         <>
-        <InviteModal open={open} onClose={handleClose} communityId={id}/>
+        <InviteModal open={open} onClose={() => handleClose({setId, setOpen, userData: userData as userData, dispatch})} communityId={id}/>
         <Form
         form={form}
         layout="vertical"
-        onFinish={handleFinish}
+        onFinish={(values) => handleFinishAdding({values, setSubmitting, form, setId, setOpen, userData: userData as userData})}
         initialValues={{
             name: '',
             ownerId: '',

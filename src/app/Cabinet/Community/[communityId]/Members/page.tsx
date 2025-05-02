@@ -1,23 +1,14 @@
 'use client';
 
-import { Avatar, Button, Card, Flex, Tooltip } from "antd";
 import { useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/state-management/redux/store";
-import { community, member } from "@/types/communities";
+import { member } from "@/types/communities";
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { fetchCollab } from "@/state-management/redux/slices/collabSlice";
-import { GrStarOutline } from "react-icons/gr";
-import { db } from "@/services/firebase/firebase";
-import { doc, getDoc, updateDoc } from "firebase/firestore";
-import { FIRESTORE_PATH_NAMES, ROUTE_CONSTANTS } from "@/utilis/constants";
-import { userData } from "@/types/userState";
-import { useRouter } from "next/navigation";
-import { generateChatId } from "@/utilis/helpers/generateChatId";
-import { fetchUserProfileInfo } from "@/state-management/redux/slices/userSlice";
-import { getUser, updateUser } from "@/services/firebase/databaseActions";
-import { updateCollabs } from "@/utilis/helpers/updatecollabs";
+import MemberCard from "@/components/sheard/MemberCard/page";
+import { handleDeleteMember, navigateToChat } from "@/features/member/memberHandlers";
 
 export default function MembersPage() {
   const { collab } = useSelector((state: RootState) => state.collab);
@@ -25,7 +16,7 @@ export default function MembersPage() {
   const dispatch = useDispatch<AppDispatch>();
   const { communityId } = useParams();
   const { push } = useRouter();
-  const isCommunityOwner = userData?.uid && collab?.ownerId === userData.uid;
+  const amIOwner = userData?.uid === collab?.ownerId;
 
   useEffect(() => {
     if (communityId && typeof communityId === 'string') {
@@ -37,59 +28,15 @@ export default function MembersPage() {
     return <div className="p-8 text-center text-gray-500">Loading members...</div>;
   }
 
-  const handleDelete = async (uid: string) => {
-    if(communityId && typeof communityId === 'string'){
-        const { collaborations } = await getUser(uid);
-        await updateUser(uid, {collaborations: collaborations.filter((i: string) => i !== communityId)})
-        await updateCollabs(uid, collaborations.filter((i: string) => i !== communityId));
-        const collaboration = doc(db, FIRESTORE_PATH_NAMES.COLLABORATIONS, communityId);
-        const collabSnap = await getDoc(collaboration);
-        const { members } = collabSnap.data() as community;
-        await updateDoc(collaboration, {
-            members: members.filter(i => i.uid !== uid)
-        });
-        dispatch(fetchCollab(communityId));
-    }
-  };
-
-  const navigate = async (uid1: string, uid2: string) => {
-    const generatedId = generateChatId(uid1, uid2);
-
-    if(userData && !userData.messages.includes(generatedId)){
-        const { messages } = await getUser(uid2);
-
-        await updateUser(uid1, {messages: [...userData.messages, generatedId]});
-        await updateUser(uid2, {messages: [...messages, generatedId]});
-        dispatch(fetchUserProfileInfo(userData.uid)); 
-    };
-    push(`${ROUTE_CONSTANTS.COMMUNITY}/${communityId}/${ROUTE_CONSTANTS.MESSAGES}/${generatedId}`);
-  }
-  
   return (
     <div className="p-8 max-w-4xl mx-auto">
       <h1 className="text-3xl font-bold mb-6">Community Members</h1>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
         {collab.members.map((member: member, index: number) =>{ 
             const isOwner = member.uid === collab.ownerId;
-            return (
-                <Card key={index} className="flex items-center gap-4 relative">
-                  <Avatar src={member.imgUrl} size={64}>
-                    {!member.imgUrl && `${member.firstName[0]}${member.lastName[0]}`}
-                  </Avatar>
-                  <Flex vertical gap={10}>
-                    <div className="text-lg font-medium flex items-center gap-2">
-                      {member.firstName} {member.lastName} 
-                      {isOwner && (
-                        <Tooltip title="Community Owner">
-                            <GrStarOutline className="text-yellow-500" />
-                        </Tooltip>
-                        )}
-                    </div>
-                    {userData.uid !== member.uid && <Button type="primary" onClick={() => navigate(userData.uid, member.uid)}>Start Chat</Button>}
-                    {isCommunityOwner && !isOwner && <Button danger onClick={() => handleDelete(member.uid)}>Delete Member</Button>}
-                    </Flex>
-                </Card>
-                )})}
+            if(typeof communityId === 'string'){
+              return <MemberCard key={index} amIOwner={amIOwner && member.uid !== userData.uid} isOwner={isOwner} member={member} onStartChat={() => navigateToChat({uid1: userData.uid, uid2: member.uid, communityId: communityId as string, push, userData, dispatch})} onDelete={() => handleDeleteMember({uid:member.uid, communityId: communityId as string, dispatch})}/>
+            }})}
       </div>
     </div>
   );

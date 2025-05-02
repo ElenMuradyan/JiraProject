@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import ReduxProvider from "@/providers/ReduxProvider";
-import "./globals.css";
 import Header from "@/components/global/Header/page";
 import Loader from "@/providers/Loader";
+import logo from '../../public/Images/Jira_Logo.svg';
+import "./globals.css";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -18,6 +19,9 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Jira Clone",
   description: "Your collaborative issue tracker",
+  icons: {
+    icon: logo.src
+  },
 };
 
 export default function RootLayout({

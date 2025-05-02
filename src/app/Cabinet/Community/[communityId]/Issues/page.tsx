@@ -18,11 +18,11 @@ import '../../../../../styles/cabinet.css';
 
 const { Title, Text } = Typography;
 
-const Cabinet = () => {
+export default function Issues () {
   const dispatch = useDispatch<AppDispatch>();
   const [showModal, setShowModal] = useState<boolean>(false);
   const [editModalData, setEditModalData] = useState<issue | null>(null); 
-  const { data, loading } = useSelector((state: RootState) => state.issues);
+  const { data } = useSelector((state: RootState) => state.issues);
   const { communityId } = useParams();
 
   useEffect(() => {
@@ -140,5 +140,3 @@ const Cabinet = () => {
     </div>
   );
 };
-
-export default Cabinet;

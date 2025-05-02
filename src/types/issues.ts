@@ -12,5 +12,7 @@ export interface issue {
 export interface issueState {
     error: string | null,
     loading: boolean,
-    data: {[key: string]: issue[]} | null
+    data: data | null
 }
+
+export type data = {[key: string]: issue[]}

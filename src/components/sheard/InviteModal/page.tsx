@@ -1,20 +1,13 @@
-"use client";
 import { Modal, Button, Space, Tooltip } from "antd";
 import { CopyOutlined } from "@ant-design/icons";
 import { FaTelegramPlane, FaInstagram, FaFacebook } from "react-icons/fa";
 import { InviteModalProps } from "@/types/modal";
-import image from '../../../../public/invite.svg';
+import image from '../../../../public/Images/invite.svg';
+import { handleCopy } from "@/utilis/helpers/handleCopy";
 
 export default function InviteModal ({ open, onClose, communityId }: InviteModalProps) {
     const shareUrl = `//localhost:3000/Cabinet/JoinCommunity/${communityId}`; 
     
-    const handleCopy = async () => {
-        try {
-          await navigator.clipboard.writeText(shareUrl);
-        } catch(err: any) {
-            console.log(err.message);
-        }
-    };
     return(
         <Modal open={open} onCancel={onClose} footer={null} title="Invite to Community">
           <img src={image.src}/>
@@ -41,7 +34,7 @@ export default function InviteModal ({ open, onClose, communityId }: InviteModal
               Share on Instagram
             </Button>
           </Tooltip>
-          <Button icon={<CopyOutlined />} onClick={handleCopy} block>
+          <Button icon={<CopyOutlined />} onClick={() => handleCopy(shareUrl)} block>
             Copy Invite Link
           </Button>
         </Space>

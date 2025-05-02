@@ -4,7 +4,7 @@ import { Form, Button, Flex } from 'antd';
 import { useState } from 'react';
 import { regexpValidation } from '@/utilis/constants';
 import { useRouter } from 'next/navigation';
-import { handleLogin } from '@/features/auth/auth.api';
+import { handleLogin } from '@/features/auth/authHandlers';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from '@/state-management/redux/store';
 import { buttonStyles, formStyles, inputStyles, formItemStyle, iStyle, flex } from '@/styles/constants';

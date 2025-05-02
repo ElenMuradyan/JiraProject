@@ -4,7 +4,7 @@ import { Avatar, Dropdown, Typography, Flex, theme } from "antd";
 import { userData } from "@/types/userState";
 import { useRouter } from "next/navigation";
 import { ROUTE_CONSTANTS } from "@/utilis/constants";
-import avatar from '../../../../public/avatar.jpg';
+import avatar from '../../../../public/Images/avatar.jpg';
 import { setFullNameLetter } from "@/utilis/helpers/getLetters";
 import { handleLogout } from "@/utilis/helpers/handleLogout";
 import '../../../styles/dropDown.css';
