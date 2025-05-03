@@ -13,13 +13,9 @@ const initialState: issueState = {
 
 export const fetchIssueData = createAsyncThunk(
     'data/fetchIssueData',
-    async (id: string) => {
-        console.log('hi');
-        
+    async (id: string) => {        
         const queryData = await getDocs(collection(db, FIRESTORE_PATH_NAMES.COLLABORATIONS, id, FIRESTORE_PATH_NAMES.ISSUES));
-        const resultData = queryData.docs.map((doc) => doc.data() as issue);   
-        console.log(resultData, id);
-             
+        const resultData = queryData.docs.map((doc) => doc.data() as issue);                
         return transformIssueData(resultData);
     }
 )

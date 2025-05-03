@@ -39,11 +39,17 @@ export const handleClose = ({onClose, form}: HandleCloseParams) => {
 
 export const handleEditIssue = async ({formData, data, communityId, setButtonLoading, onClose, dispatch}: HandleEditIssueParams) => {
     if(data && communityId && typeof communityId === 'string'){
-        setButtonLoading(true);
+        setButtonLoading(true);        
+        const editedData = {
+            description: formData.description,
+            issueName: formData.issueName.trim(),
+            priority: formData.priority,
+            type: formData.type
+        }
         try{
             const { taskId } = data;
             const issueDocRef = doc(db, FIRESTORE_PATH_NAMES.COLLABORATIONS, communityId, FIRESTORE_PATH_NAMES.ISSUES, taskId);
-            await updateDoc(issueDocRef, {formData});
+            await updateDoc(issueDocRef, editedData);
             await dispatch(fetchIssueData(communityId));
             onClose();
             communityId && dispatch(fetchIssueData(communityId as  string));

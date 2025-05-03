@@ -49,8 +49,8 @@ const ModalForm = ({ form, onFinish }: FormInterface) => {
                 </Select>
             </Form.Item>
             <Form.Item
-            name='describtion'
-            label='Describtion'
+            name='description'
+            label='Description'
             rules={[{
                 required: true,
                 message: 'Please input Issue Describtion'
